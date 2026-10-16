@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pinservs | Domains, Websites & Advertising</title>
+<meta name="description" content="Pinservs LLC registers domains, builds quality websites and runs advertising that brings customers to your business.">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.5 system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one pin, three stops on the map. Address (domain) -> Place (website) -> Signal (advertising). */
+:root{
+  --bg:#F5F6FA; --surface:#FFFFFF; --ink:#11172E; --muted:#59617A; --line:#DDE1EC;
+  --accent:#2743E6; --pin:#E5462F; --accent-soft:#E6EAFD; --band:#11172E; --band-fg:#F1F3FA; --band-muted:#A3AAC4;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0C1022; --surface:#151B33; --ink:#EEF0F8; --muted:#9AA2BE; --line:#272F4D;
+  --accent:#7D92FF; --pin:#FF6B55; --accent-soft:#1D2550; --band:#151B33; --band-fg:#EEF0F8; --band-muted:#9AA2BE; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0C1022; --surface:#151B33; --ink:#EEF0F8; --muted:#9AA2BE; --line:#272F4D;
+  --accent:#7D92FF; --pin:#FF6B55; --accent-soft:#1D2550; --band:#151B33; --band-fg:#EEF0F8; --band-muted:#9AA2BE; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);line-height:1.05;text-wrap:balance;margin:0;letter-spacing:-.02em}
+p{margin:0}
+a{color:inherit}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,label:focus-within{outline:2px solid var(--accent);outline-offset:3px}
+.eyebrow{font-family:var(--f-mono);font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+
+/* Nav */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px}
+.logo{display:flex;align-items:center;gap:8px;font-family:var(--f-display);font-weight:800;font-size:1.3rem;text-decoration:none;letter-spacing:-.02em}
+.logo svg{width:22px;height:28px}
+.nav ul{display:flex;gap:28px;list-style:none;margin:0;padding:0;font-weight:500;font-size:.95rem}
+.nav ul a{text-decoration:none;color:var(--muted)} .nav ul a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:8px;font:600 .95rem var(--f-body);background:var(--accent);color:#fff;border:0;border-radius:999px;padding:12px 22px;text-decoration:none;cursor:pointer;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+@media (max-width:760px){.nav ul{display:none}}
+
+/* Hero */
+.hero{padding-block:72px 64px;display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}
+.hero h1{font-size:clamp(2.6rem,6.4vw,4.9rem);font-weight:800}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .lede{margin-top:22px;font-size:1.18rem;color:var(--muted);max-width:34em}
+.hero .ctas{margin-top:32px;display:flex;gap:12px;flex-wrap:wrap}
+.browser{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 30px 60px -30px rgba(17,23,46,.35);overflow:hidden;min-width:0}
+.bar{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.dots{display:flex;gap:6px}.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.url{flex:1;min-width:0;display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:8px;padding:8px 12px;font-family:var(--f-mono);font-size:.9rem;white-space:nowrap;overflow:hidden}
+.url svg{flex:none;width:12px;height:15px}
+.caret{display:inline-block;width:2px;height:1em;background:var(--accent);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.mock{padding:22px;display:grid;gap:12px}
+.mock .h{height:22px;width:62%;border-radius:6px;background:var(--ink);opacity:.85}
+.mock .l{height:10px;border-radius:5px;background:var(--line)}
+.mock .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:8px}
+.mock .row div{aspect-ratio:4/3;border-radius:8px;background:var(--accent-soft);max-width:100%}
+.mock .ad{margin-top:6px;display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px dashed var(--pin);border-radius:8px;padding:10px 12px;font-family:var(--f-mono);font-size:.75rem;color:var(--pin)}
+.example{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);padding:0 22px 16px}
+@media (max-width:860px){.hero{grid-template-columns:1fr;padding-block:48px}}
+
+/* Services */
+section{padding-block:80px}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:40px}
+.sec-head h2{font-size:clamp(2rem,4.2vw,3.1rem);font-weight:700;max-width:16em}
+.sec-head p{color:var(--muted);max-width:30em}
+.services{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:2px solid var(--ink)}
+.svc{padding:28px 28px 32px 0;display:flex;flex-direction:column;gap:14px;min-width:0}
+.svc+.svc{padding-left:28px;border-left:1px solid var(--line)}
+.svc .tag{display:flex;align-items:center;gap:10px}
+.svc .tag b{font-family:var(--f-mono);font-weight:500;font-size:.8rem;color:var(--pin)}
+.svc h3{font-size:1.75rem;font-weight:700}
+.svc p{color:var(--muted)}
+.svc ul{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:9px;font-size:.97rem}
+.svc li{display:grid;grid-template-columns:18px 1fr;gap:8px}
+.svc li::before{content:"";width:7px;height:7px;margin-top:.62em;border-radius:50%;background:var(--accent)}
+@media (max-width:860px){.services{grid-template-columns:1fr}.svc,.svc+.svc{padding:28px 0;border-left:0;border-top:1px solid var(--line)}.svc:first-child{border-top:0}}
+
+/* Band: process */
+.band{background:var(--band);color:var(--band-fg)}
+.band .eyebrow,.band .sec-head p{color:var(--band-muted)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;position:relative}
+.step{display:flex;flex-direction:column;gap:10px;min-width:0}
+.step .num{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:.85rem;color:var(--band-muted)}
+.step .num::after{content:"";flex:1;height:1px;background:color-mix(in srgb,var(--band-fg) 22%,transparent)}
+.step:last-child .num::after{background:none}
+.step h3{font-size:1.3rem;font-weight:700}
+.step p{color:var(--band-muted);font-size:.97rem}
+@media (max-width:860px){.steps{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.steps{grid-template-columns:1fr}}
+
+/* Why */
+.why{display:grid;grid-template-columns:repeat(2,1fr);gap:20px 48px}
+.why div{display:grid;gap:6px;padding-block:20px;border-top:1px solid var(--line)}
+.why h3{font-size:1.2rem;font-weight:700}
+.why p{color:var(--muted)}
+@media (max-width:700px){.why{grid-template-columns:1fr}}
+
+/* FAQ */
+details{border-top:1px solid var(--line);padding-block:18px}
+details:last-child{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-family:var(--f-display);font-weight:700;font-size:1.15rem;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--accent);font-family:var(--f-mono)}
+details[open] summary::after{content:"−"}
+details p{margin-top:10px;color:var(--muted);max-width:42em}
+
+/* Contact */
+.contact{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:start}
+.contact h2{font-size:clamp(2rem,4.2vw,3.1rem);font-weight:700}
+.contact .side p{color:var(--muted);margin-top:16px;max-width:28em}
+.mail{margin-top:24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:var(--f-mono);font-size:1rem}
+.mail span{user-select:all;background:var(--accent-soft);padding:6px 10px;border-radius:6px}
+.mini{font:600 .85rem var(--f-body);background:none;border:1.5px solid var(--line);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
+form{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:28px;display:grid;gap:18px;min-width:0}
+fieldset{border:0;margin:0;padding:0;display:grid;gap:10px}
+legend,label.lbl{font-weight:600;font-size:.92rem;margin-bottom:6px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;inset:0}
+.chip span{display:inline-block;border:1.5px solid var(--line);border-radius:999px;padding:8px 14px;font-size:.92rem;cursor:pointer;transition:all .15s}
+.chip input:checked+span{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+.field{display:grid;gap:6px}
+input[type=text],input[type=email],textarea{width:100%;font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:11px 13px}
+textarea{min-height:110px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.out{border-top:1px dashed var(--line);padding-top:16px;display:grid;gap:10px}
+.out pre{margin:0;white-space:pre-wrap;word-break:break-word;font-family:var(--f-mono);font-size:.85rem;background:var(--bg);border-radius:10px;padding:14px}
+.out p{font-size:.92rem;color:var(--muted)}
+.err{color:var(--pin);font-size:.9rem}
+@media (max-width:860px){.contact{grid-template-columns:1fr}}
+@media (max-width:480px){.two{grid-template-columns:1fr}form{padding:20px}}
+
+footer{border-top:1px solid var(--line);padding-block:32px;color:var(--muted);font-size:.9rem}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#top" aria-label="Pinservs home">
+      <svg viewBox="0 0 22 28" aria-hidden="true"><path fill="var(--pin)" d="M11 0C4.9 0 0 4.9 0 11c0 8.2 11 17 11 17s11-8.8 11-17C22 4.9 17.1 0 11 0z"/><circle cx="11" cy="11" r="4.2" fill="var(--bg)"/></svg>
+      Pinservs
+    </a>
+    <ul>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#process">How we work</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a class="btn" href="#contact">Start a project</a>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap hero">
+    <div>
+      <p class="eyebrow">Pinservs LLC · Domains · Websites · Advertising</p>
+      <h1 style="margin-top:16px">Put your business <em>on the map</em> online.</h1>
+      <p class="lede">We register the right domain, build a quality website on it, and run the advertising that brings customers to it. One team, from the first click of your address to the first call from a new customer.</p>
+      <div class="ctas">
+        <a class="btn" href="#contact">Start a project</a>
+        <a class="btn ghost" href="#services">See our services</a>
+      </div>
+    </div>
+    <div class="browser" aria-hidden="true">
+      <div class="bar">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <div class="url">
+          <svg viewBox="0 0 22 28"><path fill="var(--pin)" d="M11 0C4.9 0 0 4.9 0 11c0 8.2 11 17 11 17s11-8.8 11-17C22 4.9 17.1 0 11 0z"/></svg>
+          <span id="typed">yourbusiness.com</span><span class="caret"></span>
+        </div>
+      </div>
+      <div class="mock">
+        <div class="h"></div>
+        <div class="l" style="width:88%"></div>
+        <div class="l" style="width:70%"></div>
+        <div class="row"><div></div><div></div><div></div></div>
+        <div class="ad"><span>SPONSORED · your ad here</span><span>→</span></div>
+      </div>
+      <p class="example">Example addresses, for illustration</p>
+    </div>
+  </div>
+
+  <section id="services">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">What we do</p>
+          <h2 style="margin-top:10px">Three services that work as one.</h2>
+        </div>
+        <p>Your domain is your address, your website is the place people visit, and advertising is the sign that points the way. We handle all three, so nothing gets lost between vendors.</p>
+      </div>
+      <div class="services">
+        <article class="svc">
+          <div class="tag"><b>ADDRESS</b></div>
+          <h3>Domain services</h3>
+          <p>Find and secure a name customers remember, and keep it safe for years.</p>
+          <ul>
+            <li>Domain search and registration</li>
+            <li>Transfers from your current registrar</li>
+            <li>DNS setup and management</li>
+            <li>Business email on your own domain</li>
+            <li>SSL certificates for a secure https:// address</li>
+            <li>Renewal tracking so your name never lapses</li>
+          </ul>
+        </article>
+        <article class="svc">
+          <div class="tag"><b>PLACE</b></div>
+          <h3>Quality websites</h3>
+          <p>Fast, clean sites built to look right on every phone and turn visitors into customers.</p>
+          <ul>
+            <li>Custom design for your brand</li>
+            <li>Mobile-first, fast-loading pages</li>
+            <li>Contact forms, booking and lead capture</li>
+            <li>Search engine basics (SEO) built in</li>
+            <li>Hosting, backups and security updates</li>
+            <li>Ongoing edits and content updates</li>
+          </ul>
+        </article>
+        <article class="svc">
+          <div class="tag"><b>SIGNAL</b></div>
+          <h3>Advertising</h3>
+          <p>Get in front of the people already searching for what you offer.</p>
+          <ul>
+            <li>Search ads on Google and Bing</li>
+            <li>Social media ad campaigns</li>
+            <li>Local business listings and maps</li>
+            <li>Ad copy and creative design</li>
+            <li>Landing pages built for each campaign</li>
+            <li>Plain-language reports on what's working</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="process" class="band">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">How we work</p>
+          <h2 style="margin-top:10px">From idea to customers in four steps.</h2>
+        </div>
+        <p>Every project follows the same path, whether you need one service or all three.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><span class="num">01</span><h3>Talk it through</h3><p>We learn your business, your customers and your goals, then recommend what you need and nothing you don't.</p></div>
+        <div class="step"><span class="num">02</span><h3>Claim your address</h3><p>We secure your domain, set up email and DNS, and make sure everything is in your name.</p></div>
+        <div class="step"><span class="num">03</span><h3>Build and launch</h3><p>We design your site, you review it, we refine it, then we put it live on your domain.</p></div>
+        <div class="step"><span class="num">04</span><h3>Bring in traffic</h3><p>We launch your ads, track the results and adjust each month so your budget works harder.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">Why Pinservs</p>
+          <h2 style="margin-top:10px">One partner for your whole online presence.</h2>
+        </div>
+      </div>
+      <div class="why">
+        <div><h3>One point of contact</h3><p>No juggling a registrar, a web designer and an ad agency. One team knows your whole setup.</p></div>
+        <div><h3>You own what we build</h3><p>Your domain, your website and your ad accounts stay registered to you.</p></div>
+        <div><h3>Quality over templates</h3><p>Sites are designed for your business and tested on real phones before launch.</p></div>
+        <div><h3>Clear reporting</h3><p>You see where your ad money goes and what it brings back, in plain language.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" style="padding-top:0">
+    <div class="wrap" style="max-width:860px">
+      <p class="eyebrow">Questions</p>
+      <h2 style="margin:10px 0 28px;font-size:clamp(2rem,4.2vw,3.1rem)">Common questions</h2>
+      <details><summary>I already have a domain. Can you still help?</summary><p>Yes. We can manage it where it is or transfer it to us, then build your website and point everything to it.</p></details>
+      <details><summary>Can I hire you for just one service?</summary><p>Of course. Many clients start with a domain or a website and add advertising later. The services are designed to fit together whenever you're ready.</p></details>
+      <details><summary>Who owns the domain and website?</summary><p>You do. The domain is registered in your name, and the website and its content belong to your business.</p></details>
+      <details><summary>Do you keep the website updated after launch?</summary><p>Yes. We offer hosting, security updates, backups and content edits so your site stays current.</p></details>
+      <details><summary>How do you measure advertising results?</summary><p>We track clicks, calls, form submissions and cost per lead, and send you a simple report so you can see what's working.</p></details>
+    </div>
+  </section>
+
+  <section id="contact" style="padding-top:0">
+    <div class="wrap contact">
+      <div class="side">
+        <p class="eyebrow">Start a project</p>
+        <h2 style="margin-top:10px">Tell us where you want to be found.</h2>
+        <p>Choose the services you're interested in and a few details about your business. We'll prepare your request so you can send it to us.</p>
+        <div class="mail"><span id="addr">hello@pinservs.com</span><button class="mini" type="button" id="copyAddr">Copy</button></div>
+      </div>
+      <form id="req" novalidate>
+        <fieldset>
+          <legend>I'm interested in</legend>
+          <div class="chips">
+            <label class="chip"><input type="checkbox" id="s-domain" value="Domain services" checked><span>Domain services</span></label>
+            <label class="chip"><input type="checkbox" id="s-web" value="Website" checked><span>Website</span></label>
+            <label class="chip"><input type="checkbox" id="s-ads" value="Advertising"><span>Advertising</span></label>
+          </div>
+        </fieldset>
+        <div class="two">
+          <div class="field"><label class="lbl" for="name">Your name</label><input type="text" id="name" autocomplete="name"></div>
+          <div class="field"><label class="lbl" for="biz">Business name</label><input type="text" id="biz" autocomplete="organization"></div>
+        </div>
+        <div class="field"><label class="lbl" for="domain">Domain you have or want (optional)</label><input type="text" id="domain" placeholder="yourbusiness.com"></div>
+        <div class="field"><label class="lbl" for="msg">What do you need?</label><textarea id="msg" placeholder="A few lines about your business and goals"></textarea></div>
+        <p class="err" id="err" hidden>Add your name and pick at least one service.</p>
+        <button class="btn" type="submit" style="justify-self:start">Prepare my request</button>
+        <div class="out" id="out" hidden>
+          <pre id="summary"></pre>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button class="mini" type="button" id="copySum">Copy request</button><p>Paste it into an email to the address on the left.</p></div>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Pinservs LLC · pinservs.com</span>
+    <span>Domain services · Quality websites · Advertising</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Hero: cycle through example addresses
+  var names=["yourbusiness.com","mainstreetbakery.com","rivercityplumbing.net","brightsmiledental.com"];
+  var el=document.getElementById("typed");
+  var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(!reduce){
+    var i=0,pos=names[0].length,del=true;
+    setTimeout(function tick(){
+      var w=names[i];
+      if(del){pos--; if(pos<=0){del=false;i=(i+1)%names.length;}}
+      else{pos++; if(pos>=names[i].length){del=true; el.textContent=names[i]; return setTimeout(tick,2200);}}
+      el.textContent=names[i].slice(0,Math.max(pos,0));
+      setTimeout(tick,del?40:80);
+    },2200);
+  }
+
+  function copy(text,btn,node){
+    var done=function(){var o=btn.textContent;btn.textContent="Copied";setTimeout(function(){btn.textContent=o},1500)};
+    var fallback=function(){var r=document.createRange();r.selectNodeContents(node);var s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent="Selected, press copy";};
+    try{navigator.clipboard.writeText(text).then(done,fallback)}catch(e){fallback()}
+  }
+  var addr=document.getElementById("addr");
+  document.getElementById("copyAddr").addEventListener("click",function(){copy(addr.textContent,this,addr)});
+
+  var form=document.getElementById("req"),out=document.getElementById("out"),sum=document.getElementById("summary"),err=document.getElementById("err");
+  form.addEventListener("submit",function(e){
+    e.preventDefault();
+    var svcs=[].slice.call(form.querySelectorAll(".chip input:checked")).map(function(x){return x.value});
+    var v=function(id){return document.getElementById(id).value.trim()};
+    if(!v("name")||!svcs.length){err.hidden=false;out.hidden=true;return;}
+    err.hidden=true;
+    var lines=["Subject: New project request: "+(v("biz")||v("name")),"","Name: "+v("name")];
+    if(v("biz"))lines.push("Business: "+v("biz"));
+    lines.push("Services: "+svcs.join(", "));
+    if(v("domain"))lines.push("Domain: "+v("domain"));
+    if(v("msg"))lines.push("","Details:",v("msg"));
+    sum.textContent=lines.join("\n");
+    out.hidden=false;
+  });
+  document.getElementById("copySum").addEventListener("click",function(){copy(sum.textContent,this,sum)});
+})();
+</script>
+
+</body>
+</html>
