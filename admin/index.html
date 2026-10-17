@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Pinservs Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: control room. Site list rail on the left, one site's checklist, analytics and traffic on the right. */
+:root{
+  --bg:#F3F4F8; --surface:#FFFFFF; --sunk:#EBEDF4; --ink:#11172E; --muted:#5A6278; --line:#DCE0EA;
+  --accent:#2743E6; --accent-ink:#FFFFFF; --accent-soft:#E6EAFD; --pin:#E5462F;
+  --ok:#147D4F; --ok-soft:#E1F4EA; --warn:#A35F00; --warn-soft:#FDF0DC; --bad:#C1352B; --bad-soft:#FBE6E3;
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"Figtree","Segoe UI",system-ui,-apple-system,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#0B0F20; --surface:#141A31; --sunk:#0F1428; --ink:#ECEEF7; --muted:#9AA2BE; --line:#262E4B;
+  --accent:#7D92FF; --accent-ink:#0B0F20; --accent-soft:#1C2450; --pin:#FF6B55;
+  --ok:#4FD08F; --ok-soft:#12301F; --warn:#F2B04E; --warn-soft:#33260F; --bad:#FF7A6E; --bad-soft:#3A1714;
+  color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.1;letter-spacing:-.015em;text-wrap:balance}
+p{margin:0}
+a{color:var(--accent)}
+.mono{font-family:var(--f-mono);font-size:.86em}
+.label{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+[hidden]{display:none!important}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:8px;padding:9px 16px;font-weight:600;background:var(--accent);color:var(--accent-ink);cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:disabled{opacity:.55;cursor:progress}
+.btn.quiet{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.quiet:hover{border-color:var(--muted)}
+.btn.danger{background:transparent;color:var(--bad);border:1.5px solid var(--line)}
+.btn.danger.armed{background:var(--bad);color:#fff;border-color:var(--bad)}
+.btn.sm{padding:6px 12px;font-size:.88rem}
+
+input[type=text],input[type=password],input[type=url],select,textarea{width:100%;background:var(--sunk);border:1.5px solid var(--line);border-radius:8px;padding:9px 11px;font-size:.95rem}
+textarea{min-height:70px;resize:vertical}
+.field{display:grid;gap:5px;min-width:0}
+.field label{font-weight:600;font-size:.88rem}
+.hint{font-size:.84rem;color:var(--muted)}
+.err{font-size:.86rem;color:var(--bad)}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:16px;padding-block:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--f-display);font-weight:800;font-size:1.15rem}
+.brand svg{width:18px;height:23px}
+.brand span{font-family:var(--f-mono);font-weight:500;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:2px 6px}
+.who{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:.9rem;color:var(--muted)}
+.who img{width:26px;height:26px;border-radius:50%}
+
+/* sign in */
+.signin{max-width:620px;margin:56px auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:32px;display:grid;gap:18px}
+.signin h1{font-size:2rem}
+.signin ol{margin:0;padding-left:20px;display:grid;gap:6px;color:var(--muted)}
+.signin ol b{color:var(--ink)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.check{display:flex;gap:8px;align-items:center;font-size:.92rem}
+
+/* summary */
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-block:24px}
+.summary div{background:var(--surface);padding:14px 18px;display:grid;gap:2px}
+.summary b{font-family:var(--f-display);font-size:1.9rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
+.summary .attn b{color:var(--warn)}
+@media (max-width:640px){.summary{grid-template-columns:repeat(2,1fr)}}
+
+/* main grid */
+.main{display:grid;grid-template-columns:300px 1fr;gap:24px;align-items:start;padding-bottom:48px}
+@media (max-width:860px){.main{grid-template-columns:1fr}}
+.rail{display:grid;gap:10px;min-width:0}
+.rail-head{display:flex;justify-content:space-between;align-items:center}
+.sites{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.site-btn{width:100%;text-align:left;background:transparent;border:1.5px solid transparent;border-radius:10px;padding:10px 12px;cursor:pointer;display:grid;gap:4px}
+.site-btn:hover{background:var(--surface)}
+.site-btn[aria-current="true"]{background:var(--surface);border-color:var(--accent)}
+.site-btn .nm{font-weight:600;display:flex;justify-content:space-between;gap:8px}
+.site-btn .dm{font-family:var(--f-mono);font-size:.78rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dots{display:flex;gap:4px}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--ok)}
+.empty-rail{border:1.5px dashed var(--line);border-radius:10px;padding:16px;color:var(--muted);font-size:.9rem}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;min-width:0}
+.panel>section{padding:22px 24px;border-top:1px solid var(--line);display:grid;gap:14px}
+.panel>section:first-child{border-top:0}
+.panel h2{font-size:1.6rem}
+.panel h3{font-size:1.1rem}
+.head{display:flex;justify-content:space-between;gap:16px;align-items:start;flex-wrap:wrap}
+.head .links{display:flex;gap:8px;flex-wrap:wrap}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px 20px}
+.meta div{display:grid;gap:2px;min-width:0}
+.meta dd{margin:0;overflow-wrap:anywhere}
+.meta dt{margin:0}
+
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.bad{background:var(--bad-soft);color:var(--bad)}
+.chip.idle{background:var(--sunk);color:var(--muted)}
+
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.steps li{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start}
+.tick{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:.75rem;font-weight:700}
+.tick.on{background:var(--ok);border-color:var(--ok);color:#fff}
+.steps small{display:block;color:var(--muted);font-size:.84rem}
+
+.ga-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
+@media (max-width:520px){.ga-row{grid-template-columns:1fr}}
+pre.code{margin:0;background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:12px 14px;font:.8rem/1.5 var(--f-mono);overflow-x:auto;white-space:pre}
+.note{background:var(--accent-soft);border-radius:8px;padding:10px 14px;font-size:.9rem}
+.report{width:100%;aspect-ratio:4/3;max-height:720px;border:1px solid var(--line);border-radius:10px;background:var(--sunk)}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid .full{grid-column:1/-1}
+@media (max-width:560px){.form-grid{grid-template-columns:1fr}}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:10px;font-size:.92rem;max-width:calc(100% - 32px);z-index:20;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.toast.bad{background:var(--bad);color:#fff}
+.loading{padding:48px 0;text-align:center;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <svg viewBox="0 0 22 28" aria-hidden="true"><path fill="var(--pin)" d="M11 0C4.9 0 0 4.9 0 11c0 8.2 11 17 11 17s11-8.8 11-17C22 4.9 17.1 0 11 0z"/><circle cx="11" cy="11" r="4.2" fill="var(--surface)"/></svg>
+      Pinservs <span>Admin</span>
+    </div>
+    <div class="who" id="who" hidden>
+      <img id="whoAvatar" alt="">
+      <span id="whoName"></span>
+      <button class="btn quiet sm" id="signOut" type="button">Sign out</button>
+    </div>
+  </div>
+</header>
+
+<!-- Sign in -->
+<main id="signinView" class="wrap" hidden>
+  <form class="signin" id="signinForm" novalidate>
+    <div>
+      <p class="label">Pinservs LLC</p>
+      <h1 style="margin-top:6px">Sign in to manage your websites</h1>
+    </div>
+    <p>This dashboard uses your GitHub account to save your site list and add Google Analytics to your sites. Sign in with a GitHub access token. You create it once.</p>
+    <ol>
+      <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → New fine-grained token</a>.</li>
+      <li>Under <b>Repository access</b>, choose <b>Only select repositories</b> and pick <b>pinservs</b> plus every repo that holds a site you manage.</li>
+      <li>Under <b>Permissions → Repository permissions</b>, set <b>Contents</b> to <b>Read and write</b>.</li>
+      <li>Click <b>Generate token</b>, copy it, and paste it below.</li>
+    </ol>
+    <div class="field">
+      <label for="token">GitHub token</label>
+      <input type="password" id="token" autocomplete="off" spellcheck="false" placeholder="github_pat_…">
+    </div>
+    <label class="check"><input type="checkbox" id="remember"> Keep me signed in on this device</label>
+    <p class="err" id="signinErr" hidden></p>
+    <div class="row"><button class="btn" type="submit" id="signinBtn">Sign in</button></div>
+    <p class="hint">Your token stays in this browser and is only sent to GitHub. Only someone with write access to the pinservs repo can change anything here.</p>
+  </form>
+</main>
+
+<!-- Dashboard -->
+<main id="appView" class="wrap" hidden>
+  <div class="summary" id="summary"></div>
+  <div class="main">
+    <aside class="rail">
+      <div class="rail-head"><span class="label">Websites</span><button class="btn sm" id="addSite" type="button">Add website</button></div>
+      <ul class="sites" id="siteList"></ul>
+    </aside>
+    <div class="panel" id="detail"></div>
+  </div>
+</main>
+
+<div class="loading wrap" id="loadingView">Loading…</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+(function(){
+"use strict";
+var CFG = { owner:"Peakfithub", repo:"pinservs", dataBranch:"admin-data", dataPath:"sites.json", api:"https://api.github.com" };
+var GA_RE = /^G-[A-Z0-9]{4,15}$/;
+var STATUS = { live:["Live","ok"], dns:["Waiting on DNS","warn"], building:["In progress","idle"], paused:["Paused","bad"] };
+
+var S = { token:null, user:null, sites:[], sha:null, sel:null, mode:"view", busy:false };
+
+/* ---------- storage (per-device convenience only) ---------- */
+function store(kind){ try{ return window[kind]; }catch(e){ return null; } }
+function getToken(){ var l=store("localStorage"), s=store("sessionStorage"); try{ return (s&&s.getItem("pinservs_token"))||(l&&l.getItem("pinservs_token"))||null; }catch(e){ return null; } }
+function setToken(t, remember){ var l=store("localStorage"), s=store("sessionStorage"); try{ if(l) l.removeItem("pinservs_token"); if(s) s.removeItem("pinservs_token"); if(t) (remember?l:s).setItem("pinservs_token", t); }catch(e){} }
+function getSel(){ try{ return localStorage.getItem("pinservs_sel"); }catch(e){ return null; } }
+function setSel(v){ try{ localStorage.setItem("pinservs_sel", v); }catch(e){} }
+
+/* ---------- helpers ---------- */
+var $ = function(id){ return document.getElementById(id); };
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function safeUrl(u){ return /^https?:\/\//i.test(u||"") ? u : ""; }
+function b64dec(s){ var bin=atob(String(s).replace(/\s/g,"")); var b=new Uint8Array(bin.length); for(var i=0;i<bin.length;i++) b[i]=bin.charCodeAt(i); return new TextDecoder().decode(b); }
+function b64enc(str){ var b=new TextEncoder().encode(str), bin=""; for(var i=0;i<b.length;i+=0x8000) bin+=String.fromCharCode.apply(null, b.subarray(i,i+0x8000)); return btoa(bin); }
+function slug(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,40) || ("site-"+Date.now()); }
+function fmtDate(iso){ if(!iso) return ""; var d=new Date(iso); return isNaN(d)?"":d.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}); }
+var toastT;
+function toast(msg, bad){ var t=$("toast"); t.textContent=msg; t.className="toast"+(bad?" bad":""); t.hidden=false; clearTimeout(toastT); toastT=setTimeout(function(){ t.hidden=true; }, bad?7000:3500); }
+
+/* ---------- GitHub API ---------- */
+function gh(path, opts){
+  opts = opts||{};
+  var headers = { "Accept":"application/vnd.github+json", "X-GitHub-Api-Version":"2022-11-28", "Authorization":"Bearer "+S.token };
+  if(opts.body) headers["Content-Type"]="application/json";
+  return fetch(CFG.api+path, { method:opts.method||"GET", headers:headers, body:opts.body?JSON.stringify(opts.body):undefined, cache:"no-store" })
+    .then(function(r){
+      return r.text().then(function(txt){
+        var j=null; try{ j=txt?JSON.parse(txt):null; }catch(e){}
+        if(!r.ok){ var err=new Error((j&&j.message)||("GitHub returned "+r.status)); err.status=r.status; throw err; }
+        return j;
+      });
+    }, function(){ var err=new Error("Couldn't reach GitHub. Check your internet connection and try again."); err.status=0; throw err; });
+}
+function enc(p){ return p.split("/").map(encodeURIComponent).join("/"); }
+function getFile(repo, path, ref){
+  return gh("/repos/"+repo+"/contents/"+enc(path)+"?ref="+encodeURIComponent(ref)).then(function(j){ return { text:b64dec(j.content), sha:j.sha }; });
+}
+function putFile(repo, path, branch, text, sha, message){
+  var body={ message:message, content:b64enc(text), branch:branch }; if(sha) body.sha=sha;
+  return gh("/repos/"+repo+"/contents/"+enc(path), { method:"PUT", body:body });
+}
+function ensureDataBranch(){
+  var repo=CFG.owner+"/"+CFG.repo;
+  return gh("/repos/"+repo+"/git/ref/heads/"+CFG.dataBranch).catch(function(e){
+    if(e.status!==404) throw e;
+    return gh("/repos/"+repo).then(function(r){
+      return gh("/repos/"+repo+"/git/ref/heads/"+r.default_branch);
+    }).then(function(ref){
+      return gh("/repos/"+repo+"/git/refs", { method:"POST", body:{ ref:"refs/heads/"+CFG.dataBranch, sha:ref.object.sha } });
+    });
+  });
+}
+
+/* ---------- site list storage (sites.json on the admin-data branch) ---------- */
+function loadSites(){
+  return getFile(CFG.owner+"/"+CFG.repo, CFG.dataPath, CFG.dataBranch).then(function(f){
+    var data=JSON.parse(f.text); S.sites=Array.isArray(data.sites)?data.sites:[]; S.sha=f.sha;
+  }, function(e){ if(e.status===404){ S.sites=[]; S.sha=null; return; } throw e; });
+}
+function saveSites(message){
+  var text=JSON.stringify({ version:1, updatedAt:new Date().toISOString(), sites:S.sites }, null, 2)+"\n";
+  var go=function(){ return putFile(CFG.owner+"/"+CFG.repo, CFG.dataPath, CFG.dataBranch, text, S.sha, message); };
+  return (S.sha?go():ensureDataBranch().then(go)).then(function(r){ S.sha=r.content.sha; }, function(e){
+    if(e.status===409||e.status===422){ e.message="Your site list changed somewhere else. Reload the page to get the latest version, then try again."; }
+    throw e;
+  });
+}
+
+/* ---------- Google Analytics tag ---------- */
+var GA_START="<!-- pinservs:google-analytics:start -->", GA_END="<!-- pinservs:google-analytics:end -->";
+function gaSnippet(id){
+  return GA_START+'\n<script async src="https://www.googletagmanager.com/gtag/js?id='+id+'"><\/script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag(\'js\', new Date());\n  gtag(\'config\', \''+id+'\');\n<\/script>\n'+GA_END;
+}
+function applyGa(html, id){
+  var out=html.replace(/[ \t]*<!-- pinservs:google-analytics:start -->[\s\S]*?<!-- pinservs:google-analytics:end -->\r?\n?/g, "");
+  if(!id) return out;
+  var m=out.match(/<\/head>/i);
+  if(!m) throw new Error("The page has no </head> tag, so the code can't be placed automatically. Paste the code into the page's <head> instead.");
+  return out.slice(0,m.index)+gaSnippet(id)+"\n"+out.slice(m.index);
+}
+window.__pinservsApplyGa = applyGa; // used by tests
+
+/* ---------- derived state ---------- */
+function gaState(s){ if(!s.gaId) return "none"; return s.gaInstalledId===s.gaId ? "installed" : "pending"; }
+function checks(s){
+  return [
+    { on:s.status==="live", t:"Website is live", d: s.status==="dns" ? "Waiting for the domain's DNS to point at the host." : s.status==="live" ? "Visitors can reach it." : "Mark it live once visitors can reach it." },
+    { on:!!s.gaId, t:"Google Analytics ID saved", d: s.gaId ? s.gaId : "Add the site's Measurement ID (starts with G-)." },
+    { on:gaState(s)==="installed", t:"Tracking code on the site", d: gaState(s)==="installed" ? "Added "+fmtDate(s.gaInstalledAt)+"." : s.gaId ? "Click “Add to site” below." : "Save an ID first." },
+    { on:!!s.reportUrl, t:"Traffic report connected", d: s.reportUrl ? "Showing below." : "Connect a free Looker Studio report to see traffic here." }
+  ];
+}
+function needsWork(s){ return checks(s).some(function(c){ return !c.on; }); }
+function current(){ for(var i=0;i<S.sites.length;i++) if(S.sites[i].id===S.sel) return S.sites[i]; return null; }
+
+/* ---------- render ---------- */
+function show(view){ $("signinView").hidden=view!=="signin"; $("appView").hidden=view!=="app"; $("loadingView").hidden=view!=="loading"; $("who").hidden=view!=="app"; }
+
+function renderSummary(){
+  var n=S.sites.length, live=0, tracked=0, attn=0;
+  S.sites.forEach(function(s){ if(s.status==="live") live++; if(gaState(s)==="installed") tracked++; if(needsWork(s)) attn++; });
+  $("summary").innerHTML =
+    '<div><span class="label">Websites</span><b>'+n+'</b></div>'+
+    '<div><span class="label">Live</span><b>'+live+'</b></div>'+
+    '<div><span class="label">Tracking traffic</span><b>'+tracked+'</b></div>'+
+    '<div class="'+(attn?"attn":"")+'"><span class="label">Need attention</span><b>'+attn+'</b></div>';
+}
+
+function renderList(){
+  var ul=$("siteList");
+  if(!S.sites.length){ ul.innerHTML='<li class="empty-rail">No websites yet. Click <b>Add website</b> to list your first one.</li>'; return; }
+  ul.innerHTML = S.sites.map(function(s){
+    var st=STATUS[s.status]||STATUS.building;
+    var dots=checks(s).map(function(c){ return '<i class="'+(c.on?"on":"")+'"></i>'; }).join("");
+    return '<li><button type="button" class="site-btn" data-id="'+esc(s.id)+'" aria-current="'+(s.id===S.sel&&S.mode!=="new")+'">'+
+      '<span class="nm"><span>'+esc(s.name)+'</span><span class="chip '+st[1]+'">'+st[0]+'</span></span>'+
+      '<span class="dm">'+esc(s.domain||s.liveUrl||s.repo)+'</span>'+
+      '<span class="dots" aria-label="'+checks(s).filter(function(c){return c.on;}).length+' of 4 setup steps done">'+dots+'</span>'+
+    '</button></li>';
+  }).join("");
+}
+
+function renderDetail(){
+  var el=$("detail");
+  if(S.mode==="new"){ el.innerHTML=formHtml({ branch:"main", path:"index.html", status:"building", host:"GitHub Pages" }, true); bindForm(true); return; }
+  var s=current();
+  if(!s){ el.innerHTML='<section><h2>Your websites</h2><p class="hint">Add a website to start tracking it. You need its GitHub repository and the page file that should carry the Google Analytics code.</p><div><button class="btn" type="button" data-act="add">Add website</button></div></section>'; return; }
+  if(S.mode==="edit"){ el.innerHTML=formHtml(s,false); bindForm(false); return; }
+
+  var st=STATUS[s.status]||STATUS.building, ga=gaState(s);
+  var live=safeUrl(s.liveUrl), repoUrl="https://github.com/"+esc(s.repo);
+  var gaChip = ga==="installed" ? '<span class="chip ok">Tracking on</span>' : ga==="pending" ? '<span class="chip warn">Not on site yet</span>' : '<span class="chip idle">No ID</span>';
+  var html = '';
+  html += '<section><div class="head"><div style="display:grid;gap:6px;min-width:0"><span class="chip '+st[1]+'" style="justify-self:start">'+st[0]+'</span><h2>'+esc(s.name)+'</h2>'+(s.domain?'<p class="mono" style="color:var(--muted)">'+esc(s.domain)+'</p>':'')+'</div>'+
+          '<div class="links">'+(live?'<a class="btn quiet sm" href="'+esc(live)+'" target="_blank" rel="noopener">Open site</a>':'')+'<a class="btn quiet sm" href="'+repoUrl+'" target="_blank" rel="noopener">GitHub</a><button class="btn quiet sm" type="button" data-act="edit">Edit</button></div></div>'+
+          '<dl class="meta">'+
+            '<div><dt class="label">Live address</dt><dd>'+(live?'<a href="'+esc(live)+'" target="_blank" rel="noopener">'+esc(live.replace(/^https?:\/\//,""))+'</a>':'<span class="hint">Not set</span>')+'</dd></div>'+
+            '<div><dt class="label">Repository</dt><dd class="mono">'+esc(s.repo)+'</dd></div>'+
+            '<div><dt class="label">Page with the code</dt><dd class="mono">'+esc(s.path)+' <span class="hint">('+esc(s.branch)+')</span></dd></div>'+
+            '<div><dt class="label">Hosting</dt><dd>'+esc(s.host||"—")+'</dd></div>'+
+          '</dl>'+(s.notes?'<p class="hint">'+esc(s.notes)+'</p>':'')+'</section>';
+
+  html += '<section><h3>Setup</h3><ul class="steps">'+checks(s).map(function(c){ return '<li><span class="tick '+(c.on?"on":"")+'" aria-hidden="true">'+(c.on?"✓":"")+'</span><span><b>'+esc(c.t)+'</b><small>'+esc(c.d)+'</small></span></li>'; }).join("")+'</ul></section>';
+
+  html += '<section><div class="head"><h3>Google Analytics</h3>'+gaChip+'</div>'+
+    '<form id="gaForm" class="ga-row" novalidate><div class="field"><label for="gaId">Measurement ID</label><input type="text" id="gaId" value="'+esc(s.gaId||"")+'" placeholder="G-XXXXXXXXXX" spellcheck="false" autocomplete="off" style="font-family:var(--f-mono)"></div><button class="btn quiet" type="submit">Save ID</button></form>'+
+    '<p class="err" id="gaErr" hidden></p>'+
+    '<p class="hint">Find it in Google Analytics under <b>Admin → Data streams → your site</b>. No account yet? <a href="https://analytics.google.com/" target="_blank" rel="noopener">Create a free one</a> and add a web data stream for this site\'s address.</p>';
+  if(s.gaId){
+    if(ga==="installed"){
+      html += '<div class="note">The tracking code for <span class="mono">'+esc(s.gaId)+'</span> is on <span class="mono">'+esc(s.path)+'</span>. Google Analytics starts showing visits within a day.</div>'+
+              '<div class="row"><button class="btn danger" type="button" data-act="removeGa">Remove tracking code</button></div>';
+    } else {
+      html += '<div class="row"><button class="btn" type="button" data-act="installGa">Add to site</button><span class="hint">Adds the code to <span class="mono">'+esc(s.repo+"/"+s.path)+'</span>. The site updates about a minute later.</span></div>';
+    }
+    html += '<details><summary class="hint" style="cursor:pointer">Show the code</summary><pre class="code" id="gaCode" style="margin-top:8px">'+esc(gaSnippet(s.gaId))+'</pre><div class="row" style="margin-top:8px"><button class="btn quiet sm" type="button" data-act="copyGa">Copy code</button><span class="hint">Use this for sites not hosted on GitHub.</span></div></details>';
+  }
+  html += '</section>';
+
+  html += '<section><div class="head"><h3>Traffic</h3><a class="btn quiet sm" href="https://analytics.google.com/analytics/web/" target="_blank" rel="noopener">Open Google Analytics</a></div>';
+  if(s.reportUrl){
+    html += '<iframe class="report" src="'+esc(s.reportUrl)+'" title="Traffic report for '+esc(s.name)+'" loading="lazy" allowfullscreen sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>'+
+            '<p class="hint">You must be signed in to Google in this browser to see the report. <button class="btn quiet sm" type="button" data-act="editReport">Change report</button></p>';
+  } else {
+    html += '<p class="hint">See this site\'s visitors, pages and traffic sources right here by connecting a free Looker Studio report:</p>'+
+      '<ol class="hint" style="margin:0;padding-left:20px;display:grid;gap:4px"><li>Open <a href="https://lookerstudio.google.com/reporting/create" target="_blank" rel="noopener">Looker Studio → Create report</a> and choose <b>Google Analytics</b> as the data source, then this site\'s property.</li><li>Add the charts you want, then click <b>Share → Embed report</b> and turn on <b>Enable embedding</b>.</li><li>Copy the embed link and paste it here.</li></ol>';
+  }
+  html += '<form id="reportForm" class="ga-row" novalidate '+(s.reportUrl?'hidden':'')+'><div class="field"><label for="reportUrl">Report embed link</label><input type="url" id="reportUrl" value="'+esc(s.reportUrl||"")+'" placeholder="https://lookerstudio.google.com/embed/reporting/…" spellcheck="false"></div><button class="btn quiet" type="submit">Connect report</button></form><p class="err" id="reportErr" hidden></p></section>';
+
+  el.innerHTML=html;
+  bindDetail(s);
+}
+
+function formHtml(s, isNew){
+  var opt=function(v){ return '<option value="'+v+'"'+(s.status===v?" selected":"")+'>'+STATUS[v][0]+'</option>'; };
+  return '<section><h2>'+(isNew?"Add a website":"Edit "+esc(s.name))+'</h2>'+
+  '<form id="siteForm" class="form-grid" novalidate>'+
+    '<div class="field"><label for="f-name">Website name</label><input type="text" id="f-name" value="'+esc(s.name||"")+'" placeholder="Main Street Bakery"></div>'+
+    '<div class="field"><label for="f-status">Status</label><select id="f-status">'+opt("building")+opt("dns")+opt("live")+opt("paused")+'</select></div>'+
+    '<div class="field"><label for="f-domain">Domain</label><input type="text" id="f-domain" value="'+esc(s.domain||"")+'" placeholder="mainstreetbakery.com"></div>'+
+    '<div class="field"><label for="f-live">Live address</label><input type="url" id="f-live" value="'+esc(s.liveUrl||"")+'" placeholder="https://mainstreetbakery.com"></div>'+
+    '<div class="field full"><label for="f-repo">GitHub repository</label><input type="text" id="f-repo" value="'+esc(s.repo||"")+'" placeholder="Peakfithub/mainstreetbakery" spellcheck="false"><span class="hint">Owner and repo name, or paste the repo link.</span></div>'+
+    '<div class="field"><label for="f-path">Page file for the tracking code</label><input type="text" id="f-path" value="'+esc(s.path||"index.html")+'" spellcheck="false"><span class="hint">Usually index.html. Use a folder path if the site lives in a subfolder, like clients/bakery/index.html.</span></div>'+
+    '<div class="field"><label for="f-branch">Branch</label><input type="text" id="f-branch" value="'+esc(s.branch||"main")+'" spellcheck="false"></div>'+
+    '<div class="field"><label for="f-host">Hosting</label><input type="text" id="f-host" value="'+esc(s.host||"")+'" placeholder="GitHub Pages"></div>'+
+    '<div class="field full"><label for="f-notes">Notes</label><textarea id="f-notes" placeholder="Client contact, renewal dates, anything to remember">'+esc(s.notes||"")+'</textarea></div>'+
+    '<p class="err full" id="formErr" hidden></p>'+
+    '<div class="row full" style="justify-content:space-between"><div class="row"><button class="btn" type="submit">'+(isNew?"Add website":"Save changes")+'</button><button class="btn quiet" type="button" data-act="cancel">Cancel</button></div>'+
+      (isNew?'':'<button class="btn danger" type="button" data-act="delete">Remove from dashboard</button>')+'</div>'+
+  '</form></section>';
+}
+
+function renderAll(){ renderSummary(); renderList(); renderDetail(); }
+
+/* ---------- actions ---------- */
+function busy(on, btn, label){ S.busy=on; if(btn){ if(on){ btn.dataset.label=btn.textContent; btn.textContent=label||"Working…"; } else if(btn.dataset.label){ btn.textContent=btn.dataset.label; } btn.disabled=on; } }
+function fail(e){ busy(false); toast(e.status===401?"GitHub didn't accept your token. Sign out and sign in with a new one.":e.status===403||e.status===404?(e.message+". Check that your token can read and write this repository."):e.message, true); }
+
+function bindForm(isNew){
+  var f=$("siteForm");
+  f.addEventListener("submit", function(ev){
+    ev.preventDefault(); if(S.busy) return;
+    var v=function(id){ return $(id).value.trim(); };
+    var repo=v("f-repo").replace(/^https?:\/\/github\.com\//i,"").replace(/\.git$/,"").replace(/\/+$/,"");
+    var errs=[];
+    if(!v("f-name")) errs.push("Add a website name.");
+    if(!/^[\w.-]+\/[\w.-]+$/.test(repo)) errs.push("Enter the repository as owner/name, for example Peakfithub/pinservs.");
+    if(v("f-live") && !safeUrl(v("f-live"))) errs.push("The live address must start with https://");
+    var path=v("f-path").replace(/^\/+/,"")||"index.html";
+    if($("formErr")){ $("formErr").hidden=!errs.length; $("formErr").textContent=errs.join(" "); }
+    if(errs.length) return;
+    var rec = isNew ? { id:slug(v("f-name")), createdAt:new Date().toISOString() } : JSON.parse(JSON.stringify(current()));
+    if(isNew){ while(S.sites.some(function(x){ return x.id===rec.id; })) rec.id+="-2"; }
+    rec.name=v("f-name"); rec.status=$("f-status").value; rec.domain=v("f-domain").replace(/^https?:\/\//,"").replace(/\/.*$/,""); rec.liveUrl=v("f-live");
+    if(rec.repo!==repo||rec.path!==path||rec.branch!==(v("f-branch")||"main")){ if(!isNew && rec.gaInstalledId){ rec.gaInstalledId=null; rec.gaInstalledAt=null; } }
+    rec.repo=repo; rec.path=path; rec.branch=v("f-branch")||"main"; rec.host=v("f-host"); rec.notes=v("f-notes"); rec.updatedAt=new Date().toISOString();
+    var prev=S.sites.slice();
+    S.sites = isNew ? S.sites.concat([rec]) : S.sites.map(function(x){ return x.id===rec.id?rec:x; });
+    var btn=f.querySelector("button[type=submit]"); busy(true, btn, "Saving…");
+    saveSites((isNew?"Add ":"Update ")+rec.name+" in admin dashboard").then(function(){
+      busy(false); S.sel=rec.id; setSel(rec.id); S.mode="view"; renderAll(); toast(isNew?"Website added":"Changes saved");
+    }, function(e){ S.sites=prev; fail(e); busy(false, btn); });
+  });
+  f.querySelector('[data-act="cancel"]').addEventListener("click", function(){ S.mode="view"; renderAll(); });
+  var del=f.querySelector('[data-act="delete"]');
+  if(del) del.addEventListener("click", function(){
+    if(!del.classList.contains("armed")){ del.classList.add("armed"); del.textContent="Click again to remove"; setTimeout(function(){ if(del.isConnected){ del.classList.remove("armed"); del.textContent="Remove from dashboard"; } }, 4000); return; }
+    var s=current(), prev=S.sites.slice(); S.sites=S.sites.filter(function(x){ return x.id!==s.id; });
+    busy(true, del, "Removing…");
+    saveSites("Remove "+s.name+" from admin dashboard").then(function(){ busy(false); S.sel=S.sites[0]?S.sites[0].id:null; S.mode="view"; renderAll(); toast(s.name+" removed from the dashboard. The website itself was not changed."); }, function(e){ S.sites=prev; fail(e); busy(false, del); });
+  });
+}
+
+function updateSite(id, patch, message){
+  var prev=S.sites.slice();
+  S.sites=S.sites.map(function(x){ return x.id===id ? Object.assign({}, x, patch, { updatedAt:new Date().toISOString() }) : x; });
+  return saveSites(message).catch(function(e){ S.sites=prev; throw e; });
+}
+
+function setGaOnSite(s, id, btn){
+  busy(true, btn, id?"Adding…":"Removing…");
+  getFile(s.repo, s.path, s.branch).then(function(f){
+    var next=applyGa(f.text, id);
+    if(next===f.text) return null;
+    return putFile(s.repo, s.path, s.branch, next, f.sha, id?("Add Google Analytics ("+id+")"):"Remove Google Analytics");
+  }).then(function(){
+    return updateSite(s.id, { gaInstalledId:id||null, gaInstalledAt:id?new Date().toISOString():null }, (id?"Record Google Analytics on ":"Record removal of Google Analytics from ")+s.name);
+  }).then(function(){
+    busy(false); renderAll(); toast(id?"Tracking code added. The site updates in about a minute.":"Tracking code removed from the site.");
+  }, function(e){ if(e.status===404) e.message="Couldn't find "+s.path+" on the "+s.branch+" branch of "+s.repo; fail(e); busy(false, btn); });
+}
+
+function bindDetail(s){
+  var d=$("detail");
+  d.querySelectorAll("[data-act]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var act=b.dataset.act; if(S.busy) return;
+      if(act==="edit"){ S.mode="edit"; renderDetail(); }
+      else if(act==="installGa"){ setGaOnSite(s, s.gaId, b); }
+      else if(act==="removeGa"){
+        if(!b.classList.contains("armed")){ b.classList.add("armed"); b.textContent="Click again to remove"; return; }
+        setGaOnSite(s, null, b);
+      }
+      else if(act==="copyGa"){ var txt=gaSnippet(s.gaId); var sel=function(){ var r=document.createRange(); r.selectNodeContents($("gaCode")); var g=getSelection(); g.removeAllRanges(); g.addRange(r); toast("Code selected. Press Ctrl+C or ⌘C to copy."); }; try{ navigator.clipboard.writeText(txt).then(function(){ toast("Code copied"); }, sel); }catch(e){ sel(); } }
+      else if(act==="editReport"){ $("reportForm").hidden=false; $("reportUrl").focus(); }
+    });
+  });
+  $("gaForm").addEventListener("submit", function(ev){
+    ev.preventDefault(); if(S.busy) return;
+    var id=$("gaId").value.trim().toUpperCase(), err=$("gaErr");
+    if(id && !GA_RE.test(id)){ err.hidden=false; err.textContent="That doesn't look like a Measurement ID. It starts with G- followed by letters and numbers, like G-4XK2M9PQ7R."; return; }
+    err.hidden=true;
+    if(id===(s.gaId||"")){ toast("No change to save"); return; }
+    var btn=ev.target.querySelector("button"); busy(true, btn, "Saving…");
+    updateSite(s.id, { gaId:id||null }, "Set Google Analytics ID for "+s.name).then(function(){ busy(false); renderAll(); toast(id?"ID saved. Click “Add to site” to start tracking.":"ID cleared"); }, function(e){ fail(e); busy(false, btn); });
+  });
+  $("reportForm").addEventListener("submit", function(ev){
+    ev.preventDefault(); if(S.busy) return;
+    var u=$("reportUrl").value.trim(), err=$("reportErr");
+    u=u.replace(/^https:\/\/(lookerstudio|datastudio)\.google\.com\/(u\/\d+\/)?reporting\//,"https://lookerstudio.google.com/embed/reporting/");
+    if(u && !/^https:\/\/(lookerstudio|datastudio)\.google\.com\/embed\//.test(u)){ err.hidden=false; err.textContent="Paste a Looker Studio report link. It starts with https://lookerstudio.google.com/"; return; }
+    err.hidden=true;
+    var btn=ev.target.querySelector("button"); busy(true, btn, "Saving…");
+    updateSite(s.id, { reportUrl:u||null }, "Set traffic report for "+s.name).then(function(){ busy(false); renderAll(); toast(u?"Traffic report connected":"Traffic report removed"); }, function(e){ fail(e); busy(false, btn); });
+  });
+}
+
+$("siteList").addEventListener("click", function(ev){ var b=ev.target.closest(".site-btn"); if(!b||S.busy) return; S.sel=b.dataset.id; setSel(S.sel); S.mode="view"; renderAll(); if(window.innerWidth<860) $("detail").scrollIntoView({behavior:"smooth"}); });
+$("addSite").addEventListener("click", function(){ if(S.busy) return; S.mode="new"; renderAll(); });
+$("detail").addEventListener("click", function(ev){ if(ev.target.closest('[data-act="add"]')){ S.mode="new"; renderAll(); } });
+$("signOut").addEventListener("click", function(){ setToken(null); S.token=null; S.user=null; show("signin"); $("token").value=""; });
+
+/* ---------- sign in ---------- */
+function start(token, remember){
+  S.token=token; show("loading");
+  return gh("/user").then(function(u){
+    S.user=u;
+    return gh("/repos/"+CFG.owner+"/"+CFG.repo);
+  }).then(function(r){
+    if(r.permissions && r.permissions.push===false){ var e=new Error("This GitHub account can't make changes to "+CFG.owner+"/"+CFG.repo+"."); e.status=-1; throw e; }
+    return loadSites();
+  }).then(function(){
+    if(remember!==undefined) setToken(token, remember);
+    $("whoName").textContent=S.user.login; $("whoAvatar").src=S.user.avatar_url||"";
+    var saved=getSel(); S.sel = S.sites.some(function(x){ return x.id===saved; }) ? saved : (S.sites[0]?S.sites[0].id:null);
+    S.mode="view"; show("app"); renderAll();
+  }).catch(function(e){
+    S.token=null; setToken(null); show("signin");
+    var m = e.status===401 ? "GitHub didn't accept that token. Check you copied all of it, or create a new one."
+          : e.status===404 ? "That token can't see the "+CFG.owner+"/"+CFG.repo+" repository. Edit the token and add pinservs under Repository access."
+          : e.message;
+    $("signinErr").hidden=false; $("signinErr").textContent=m;
+  });
+}
+$("signinForm").addEventListener("submit", function(ev){
+  ev.preventDefault(); var t=$("token").value.trim();
+  if(!t){ $("signinErr").hidden=false; $("signinErr").textContent="Paste your GitHub token first."; return; }
+  $("signinErr").hidden=true; start(t, $("remember").checked);
+});
+
+var saved=getToken();
+if(saved) start(saved); else show("signin");
+})();
+</script>
+</body>
+</html>
