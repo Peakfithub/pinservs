@@ -499,7 +499,7 @@ function start(token, remember){
     return loadSites();
   }).then(function(){
     if(remember!==undefined) setToken(token, remember);
-    $("whoName").textContent=S.user.login; $("whoAvatar").src=S.user.avatar_url||"";
+    $("whoName").textContent=S.user.login; var av=$("whoAvatar"); av.hidden=!S.user.avatar_url; if(S.user.avatar_url) av.src=S.user.avatar_url;
     var saved=getSel(); S.sel = S.sites.some(function(x){ return x.id===saved; }) ? saved : (S.sites[0]?S.sites[0].id:null);
     S.mode="view"; show("app"); renderAll();
   }).catch(function(e){
