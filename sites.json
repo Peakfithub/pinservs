@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "updatedAt": "2026-10-17T10:45:00.000Z",
+  "sites": [
+    {
+      "id": "pinservs",
+      "name": "Pinservs",
+      "status": "dns",
+      "domain": "pinservs.com",
+      "liveUrl": "https://peakfithub.github.io/pinservs/",
+      "repo": "Peakfithub/pinservs",
+      "path": "index.html",
+      "branch": "main",
+      "host": "GitHub Pages",
+      "notes": "Domain registered at hosting.com. Point its DNS at GitHub Pages, then switch the live address to https://pinservs.com. Contact email on the site is still the placeholder hello@pinservs.com.",
+      "gaId": null,
+      "gaInstalledId": null,
+      "reportUrl": null,
+      "createdAt": "2026-10-17T10:45:00.000Z",
+      "updatedAt": "2026-10-17T10:45:00.000Z"
+    }
+  ]
+}
