@@ -144,6 +144,25 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--muted);fo
 .gal-grid:empty{display:none}
 .gal-grid li{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
 .gal-grid img{width:100%;height:100%;object-fit:cover;display:block}
+.qr{background:#fff;border-radius:12px;padding:8px;width:220px;max-width:100%;border:1px solid var(--line);flex:none}
+.qr svg{display:block;width:100%;height:auto}
+.qr-row{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.qr-row .grow{flex:1 1 200px;min-width:0;display:grid;gap:8px}
+dialog#qrDialog{border:0;border-radius:16px;padding:24px;max-width:min(460px,calc(100vw - 32px));background:var(--surface);color:var(--ink);box-shadow:0 30px 80px rgba(0,0,0,.35)}
+dialog#qrDialog::backdrop{background:rgba(12,16,34,.55)}
+dialog#qrDialog h2{font-size:1.4rem;margin-bottom:6px}
+dialog#qrDialog .qr{width:260px;margin:16px auto}
+.viewbar{display:none}
+@media (max-width:980px){#qrOpen{display:none}}
+body.viewmode header.top,body.viewmode .intro,body.viewmode .tabs,body.viewmode #brief,body.viewmode footer,body.viewmode .stage-bar,body.viewmode .stage>.hint,body.viewmode .chrome{display:none!important}
+body.viewmode main.wrap{max-width:none;padding:0}
+body.viewmode .bench{display:block;padding:0}
+body.viewmode #panePrev{display:block!important;position:static}
+body.viewmode .browser{border:0;border-radius:0;box-shadow:none;max-width:none}
+body.viewmode iframe#preview{height:calc(100vh - 56px);height:calc(100dvh - 56px - env(safe-area-inset-bottom,0px))}
+body.viewmode .viewbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:10;height:calc(56px + env(safe-area-inset-bottom,0px));padding:0 max(12px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(12px,env(safe-area-inset-left,0px));align-items:center;justify-content:space-between;gap:10px;background:var(--ink);color:var(--bg);font-size:.85rem}
+.viewbar a{color:inherit}
+.viewbar .btn{padding:8px 14px;font-size:.85rem;background:var(--accent);color:var(--accent-ink)}
 .gal-grid button{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(17,23,46,.75);color:#fff;font-size:15px;line-height:1;cursor:pointer}
 .custom-color input[type=color]{width:34px;height:30px;border:1.5px solid var(--line);border-radius:8px;padding:2px;background:var(--surface);cursor:pointer}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -287,6 +306,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--muted);fo
           <h3 id="doneTitle">Your email app should be open now</h3>
           <p class="hint" id="doneText">Press send in your email app to reach us. If nothing opened, email the link below to <b>support@pinservs.com</b>.</p>
           <div class="linkbox"><input type="text" id="shareUrl" readonly aria-label="Link to your preview"><button class="btn quiet sm" type="button" id="copyBtn">Copy link</button></div>
+          <div class="qr-row"><div class="qr" id="doneQr" aria-hidden="true"></div><div class="grow"><b>See it on your phone</b><span class="hint">Point your phone's camera at this code. Your site opens full screen, just like your customers will see it.</span></div></div>
         </div>
       </fieldset>
       </div>
@@ -295,6 +315,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--muted);fo
     <section class="stage" data-pane id="panePrev" aria-label="Live preview">
       <div class="stage-bar">
         <span class="eyebrow">Live preview</span>
+        <button type="button" class="btn quiet sm" id="qrOpen">Open on your phone</button>
         <div class="seg" role="group" aria-label="Preview size">
           <button type="button" id="viewDesk" aria-pressed="true">Desktop</button>
           <button type="button" id="viewPhone" aria-pressed="false">Phone</button>
@@ -309,8 +330,19 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--muted);fo
   </div>
 </main>
 
+<dialog id="qrDialog" aria-labelledby="qrTitle">
+  <h2 id="qrTitle">Scan to view on your phone</h2>
+  <p class="hint">Open your phone's camera and point it at the code. Your preview opens full screen.</p>
+  <div class="qr" id="dialogQr"></div>
+  <p class="hint" id="qrNote" hidden>Your logo and photos stay on this computer, so your phone shows placeholders where they go.</p>
+  <div class="linkbox" style="margin-top:12px"><input type="text" id="qrUrl" readonly aria-label="Link to view your preview on a phone"><button class="btn quiet sm" type="button" id="qrCopy">Copy</button></div>
+  <div style="display:flex;justify-content:flex-end;margin-top:16px"><button class="btn" type="button" id="qrClose">Done</button></div>
+</dialog>
+<div class="viewbar" id="viewbar" role="navigation" aria-label="Preview options"><span>Preview by <b>Pinservs</b></span><span style="display:flex;gap:12px;align-items:center"><a id="viewEdit" href="#">Edit</a><a class="btn" href="../#contact" id="viewGet">Get this website</a></span></div>
+
 <footer><div class="wrap">© 2026 Pinservs LLC · support@pinservs.com</div></footer>
 
+<script src="qrcode.js"></script>
 <script>
 (function(){
 "use strict";
@@ -511,14 +543,37 @@ $("domain").addEventListener("blur", function(){ var c=cleanDomain(this.value); 
 /* ---------- share links: everything lives in the #hash, nothing is stored on a server ---------- */
 function b64u(s){ var b=new TextEncoder().encode(s), bin=""; for(var i=0;i<b.length;i++) bin+=String.fromCharCode(b[i]); return btoa(bin).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
 function unb64u(s){ var bin=atob(s.replace(/-/g,"+").replace(/_/g,"/")); var b=new Uint8Array(bin.length); for(var i=0;i<bin.length;i++) b[i]=bin.charCodeAt(i); return new TextDecoder().decode(b); }
-function shareLink(d){
-  var pub={}; Object.keys(d).forEach(function(k){ if(["name","email","notes","logo"].indexOf(k)<0 && d[k]) pub[k]=d[k]; });
-  return location.origin+location.pathname+"#p."+b64u(JSON.stringify(pub));
+function bytesB64u(b){ var bin=""; for(var i=0;i<b.length;i++) bin+=String.fromCharCode(b[i]); return btoa(bin).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+function b64uBytes(s){ var bin=atob(s.replace(/-/g,"+").replace(/_/g,"/")); var b=new Uint8Array(bin.length); for(var i=0;i<bin.length;i++) b[i]=bin.charCodeAt(i); return b; }
+function pub(d){ var o={}; Object.keys(d).forEach(function(k){ if(["name","email","notes","logo","photos"].indexOf(k)<0 && d[k]) o[k]=d[k]; }); return o; }
+var BASE=location.origin+location.pathname;
+// Links carry the preview in the #hash (compressed when the browser can), so nothing is stored on a server.
+// "#z." / "#p." open the builder; "#vz." / "#vp." open the full-screen phone view.
+function packed(d){
+  var json=JSON.stringify(pub(d));
+  if(window.CompressionStream){
+    try{
+      var cs=new Blob([json]).stream().pipeThrough(new CompressionStream("deflate-raw"));
+      return new Response(cs).arrayBuffer().then(function(buf){ return "z."+bytesB64u(new Uint8Array(buf)); }, function(){ return "p."+b64u(json); });
+    }catch(e){}
+  }
+  return Promise.resolve("p."+b64u(json));
 }
+function shareLinks(d){ return packed(d).then(function(t){ return { edit:BASE+"#"+t, view:BASE+"#v"+t }; }); }
 function fromHash(){
-  var h=location.hash.slice(1); if(h.indexOf("p.")!==0) return null;
-  try{ var d=JSON.parse(unb64u(h.slice(2))); return (d && typeof d==="object") ? d : null; }catch(e){ return null; }
+  var h=location.hash.slice(1), view=false;
+  if(h.charAt(0)==="v"){ view=true; h=h.slice(1); }
+  var done=function(txt){ try{ var d=JSON.parse(txt); return (d && typeof d==="object") ? {data:d, view:view, token:h} : null; }catch(e){ return null; } };
+  try{
+    if(h.indexOf("p.")===0) return Promise.resolve(done(unb64u(h.slice(2))));
+    if(h.indexOf("z.")===0 && window.DecompressionStream){
+      var ds=new Blob([b64uBytes(h.slice(2))]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+      return new Response(ds).text().then(done, function(){ return null; });
+    }
+  }catch(e){}
+  return Promise.resolve(null);
 }
+function qrSvg(text){ var q=qrcode(0,"M"); q.addData(text); q.make(); return q.createSvgTag({cellSize:4, margin:4, scalable:true, title:"QR code for your preview"}); }
 
 /* ---------- the generated website ---------- */
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
@@ -643,15 +698,16 @@ $("tabPrev").addEventListener("click", function(){ tab(true); });
 
 /* ---------- share + send ---------- */
 function track(ev, extra){ try{ if(typeof gtag==="function") gtag("event", ev, extra||{}); }catch(e){} }
-function showLink(url, sent){
-  $("shareUrl").value=url; $("done").hidden=false;
+function showLink(links, sent){
+  $("shareUrl").value=links.edit; $("done").hidden=false;
+  try{ $("doneQr").innerHTML=qrSvg(links.view); }catch(e){ $("doneQr").parentNode.hidden=true; }
   $("doneTitle").textContent = sent ? "Your email app should be open now" : "Here's your preview link";
   $("doneText").innerHTML = sent ? "Press send in your email app to reach us"+((LOGO.data||photoCount())?", and attach your "+(LOGO.data&&photoCount()?"logo and photos":LOGO.data?"logo file":"photos")+" so we can use the full-quality versions":"")+". If nothing opened, email this link to <b>support@pinservs.com</b>." : "Anyone with this link sees your preview. Bookmark it or send it to someone for a second opinion.";
 }
 $("shareBtn").addEventListener("click", function(){
   var d=read(); if(!d.biz){ fail(["Add your business name first."], ["biz"]); return; }
-  $("formErr").hidden=true; var url=shareLink(d); showLink(url,false); track("preview_link_created",{industry:d.industry, style:d.style});
-  try{ history.replaceState(null,"",url); }catch(e){}
+  $("formErr").hidden=true;
+  shareLinks(d).then(function(L){ showLink(L,false); track("preview_link_created",{industry:d.industry, style:d.style}); try{ history.replaceState(null,"",L.edit); }catch(e){} });
 });
 $("copyBtn").addEventListener("click", function(){
   var i=$("shareUrl"), b=this, ok=function(){ b.textContent="Copied"; setTimeout(function(){ b.textContent="Copy link"; },1500); };
@@ -673,7 +729,10 @@ $("brief").addEventListener("submit", function(e){
   if(d.domain && !validDomain(d.domain)){ msgs.push("Check the domain, like yourbusiness.com."); ids.push("domain"); }
   if(msgs.length){ fail(msgs, ids); return; }
   FIELDS.forEach(function(f){ $(f).removeAttribute("aria-invalid"); }); $("formErr").hidden=true;
-  var url=shareLink(d);
+  shareLinks(d).then(function(L){ sendRequest(d, L); });
+});
+function sendRequest(d, L){
+  var url=L.edit;
   var ind=$("industry").options[$("industry").selectedIndex].text;
   var body=[
     "Hi Pinservs,","","I'd like a website. Here's my preview:", url, "",
@@ -687,19 +746,46 @@ $("brief").addEventListener("submit", function(e){
   ].filter(function(x,i,a){ return x!=="" || a[i-1]!==""; }).join("\n");
   var href="mailto:"+TO+"?subject="+encodeURIComponent("Website request: "+d.biz)+"&body="+encodeURIComponent(body);
   track("website_request_sent",{industry:d.industry, style:d.style});
-  showLink(url,true);
+  showLink(L,true);
   window.__lastMailto=href;
   window.location.href=href;
+}
+
+/* ---------- QR dialog: open the preview on a phone ---------- */
+$("qrOpen").addEventListener("click", function(){
+  var d=read();
+  shareLinks(d).then(function(L){
+    $("dialogQr").innerHTML=qrSvg(L.view); $("qrUrl").value=L.view;
+    $("qrNote").hidden=!(LOGO.data||photoCount());
+    if($("qrDialog").showModal) $("qrDialog").showModal(); else $("qrDialog").setAttribute("open","");
+    track("qr_shown");
+  });
+});
+$("qrClose").addEventListener("click", function(){ if($("qrDialog").close) $("qrDialog").close(); else $("qrDialog").removeAttribute("open"); });
+$("qrDialog").addEventListener("click", function(e){ if(e.target===this && this.close) this.close(); });
+$("qrCopy").addEventListener("click", function(){
+  var i=$("qrUrl"), b=this, ok=function(){ b.textContent="Copied"; setTimeout(function(){ b.textContent="Copy"; },1500); };
+  try{ navigator.clipboard.writeText(i.value).then(ok, function(){ i.select(); }); }catch(e){ i.select(); }
 });
 
 /* ---------- start: a shared link, then this visit's draft, then blank ---------- */
-var start=fromHash();
+fromHash().then(function(link){
+var start=link&&link.data;
+if(link&&link.view){
+  document.body.classList.add("viewmode");
+  $("viewEdit").href=BASE+"#"+link.token; $("viewGet").href=BASE+"#"+link.token;
+  $("viewGet").addEventListener("click", function(){ try{ sessionStorage.setItem("pinservs_goto","send"); }catch(e){} });
+  document.title=(start.biz||"Your website")+" · Preview by Pinservs";
+}
 if(!start){ try{ start=JSON.parse(sessionStorage.getItem("pinservs_brief")||"null"); }catch(e){} }
 if(start) write(start);
 try{ var savedPh=JSON.parse(sessionStorage.getItem("pinservs_photos")||"null"); if(savedPh){ PHOTOS={cover:savedPh.cover||null, about:savedPh.about||null, gallery:(savedPh.gallery||[]).slice(0,8)}; showPhotos(); } }catch(e){}
 try{ var savedLogo=JSON.parse(sessionStorage.getItem("pinservs_logo")||"null"); if(savedLogo&&savedLogo.data){ LOGO=savedLogo; showLogo(false); if(start&&/^logo\d$/.test(start.color||"")){ var r=document.querySelector('input[name=color][value='+start.color+']'); if(r) r.checked=true; } } }catch(e){}
 setPlaceholders(); render();
-if(fromHash()) track("preview_link_opened");
+if(link) track(link.view?"preview_viewed_on_phone":"preview_link_opened");
+try{ if(sessionStorage.getItem("pinservs_goto")==="send" && !document.body.classList.contains("viewmode")){ sessionStorage.removeItem("pinservs_goto"); setTimeout(function(){ $("name").scrollIntoView({block:"center"}); $("name").focus({preventScroll:true}); },300); } }catch(e){}
+});
+window.addEventListener("hashchange", function(){ location.reload(); });
 window.__pinservsBuild = build; // for tests
 })();
 </script>
