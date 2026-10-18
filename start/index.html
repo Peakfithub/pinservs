@@ -127,10 +127,24 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--muted);fo
 .logo-drop{display:flex;align-items:center;gap:14px;border:1.5px dashed var(--line);border-radius:12px;padding:12px;flex-wrap:wrap}
 .logo-drop.over{border-color:var(--accent);background:var(--accent-soft)}
 .logo-drop img{width:64px;height:64px;object-fit:contain;border-radius:8px;background:#fff;border:1px solid var(--line);padding:4px}
-.logo-drop .grow{flex:1;min-width:180px;display:grid;gap:4px}
+.logo-drop .grow{flex:1 1 180px;min-width:0;display:grid;grid-template-columns:minmax(0,1fr);gap:4px}
 .logo-drop input[type=file]{font-size:.88rem;max-width:100%}
 .from-logo{display:grid;gap:8px;padding:12px;border-radius:12px;background:var(--accent-soft)}
 .custom-color{display:flex;align-items:center;gap:8px;font-size:.88rem}
+.photo-slot{display:flex;align-items:center;gap:14px;border:1.5px dashed var(--line);border-radius:12px;padding:12px;flex-wrap:wrap}
+.photo-slot.over{border-color:var(--accent);background:var(--accent-soft)}
+.photo-slot .grow{flex:1 1 180px;min-width:0;display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+.photo-slot .grow .btn{justify-self:start}
+.photo-slot input[type=file]{font-size:.88rem;max-width:100%}
+.ph-thumb{width:84px;aspect-ratio:1;border-radius:10px;background:var(--sunk);border:1px solid var(--line);display:grid;place-items:center;overflow:hidden;flex:none}
+.ph-thumb.wide{width:120px;aspect-ratio:16/10}
+.ph-thumb span{font-size:.72rem;color:var(--muted);text-align:center;padding:4px}
+.ph-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.gal-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.gal-grid:empty{display:none}
+.gal-grid li{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.gal-grid img{width:100%;height:100%;object-fit:cover;display:block}
+.gal-grid button{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(17,23,46,.75);color:#fff;font-size:15px;line-height:1;cursor:pointer}
 .custom-color input[type=color]{width:34px;height:30px;border:1.5px solid var(--line);border-radius:8px;padding:2px;background:var(--surface);cursor:pointer}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -159,7 +173,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--muted);fo
     <form id="brief" novalidate data-pane class="on" aria-label="Website details">
       <div id="paneForm" style="display:grid;gap:22px">
       <fieldset class="card">
-        <legend>Your business <span>STEP 1 OF 4</span></legend>
+        <legend>Your business <span>STEP 1 OF 5</span></legend>
         <div class="field"><label for="biz">Business name <span class="req">*</span></label><input type="text" id="biz" name="biz" maxlength="60" autocomplete="organization" placeholder="Main Street Bakery"></div>
         <div class="field"><span class="lbl" id="domLbl">Your website address (domain)</span>
           <div class="choices two-up" role="radiogroup" aria-labelledby="domLbl">
@@ -186,7 +200,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--muted);fo
       </fieldset>
 
       <fieldset class="card">
-        <legend>What you offer <span>STEP 2 OF 4</span></legend>
+        <legend>What you offer <span>STEP 2 OF 5</span></legend>
         <div class="field"><label for="services">Services or products</label><textarea id="services" name="services" maxlength="600" placeholder=""></textarea><span class="hint">One per line, up to 6. Add a short description after a dash, like “Wedding cakes - custom designs for your big day”.</span></div>
         <div class="field"><label for="cta">Main button on your site</label>
           <select id="cta" name="cta">
@@ -198,8 +212,32 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--muted);fo
           </select></div>
       </fieldset>
 
+      <fieldset class="card" id="photosStep">
+        <legend>Photos <span>STEP 3 OF 5</span></legend>
+        <p class="hint" style="margin-top:-6px">Optional, but photos make the biggest difference. Use your own pictures of your work, team, space or products. Phone photos are fine.</p>
+        <div class="field"><span class="lbl">Cover photo</span>
+          <div class="photo-slot" id="slot-cover" data-slot="cover">
+            <div class="ph-thumb wide" id="thumb-cover"><span>No photo yet</span></div>
+            <div class="grow"><label for="file-cover" class="hint" style="font-weight:600;color:var(--ink)">Shown large at the top of your site</label><input type="file" id="file-cover" accept="image/*"><button type="button" class="btn quiet sm" data-remove="cover" hidden>Remove</button></div>
+          </div>
+        </div>
+        <div class="field"><span class="lbl">About photo</span>
+          <div class="photo-slot" id="slot-about" data-slot="about">
+            <div class="ph-thumb" id="thumb-about"><span>No photo yet</span></div>
+            <div class="grow"><label for="file-about" class="hint" style="font-weight:600;color:var(--ink)">You, your team or your storefront</label><input type="file" id="file-about" accept="image/*"><button type="button" class="btn quiet sm" data-remove="about" hidden>Remove</button></div>
+          </div>
+        </div>
+        <div class="field"><span class="lbl">Gallery <span class="hint" id="galCount">(up to 8 photos)</span></span>
+          <div class="photo-slot" id="slot-gallery" data-slot="gallery">
+            <div class="grow"><label for="file-gallery" class="hint" style="font-weight:600;color:var(--ink)">Show off your work, food, products or space. Pick several at once.</label><input type="file" id="file-gallery" accept="image/*" multiple></div>
+          </div>
+          <ul class="gal-grid" id="galGrid" aria-label="Gallery photos"></ul>
+        </div>
+        <p class="err" id="photoErr" role="alert" hidden></p>
+      </fieldset>
+
       <fieldset class="card">
-        <legend>How customers reach you <span>STEP 3 OF 4</span></legend>
+        <legend>How customers reach you <span>STEP 4 OF 5</span></legend>
         <div class="two">
           <div class="field"><label for="phone">Business phone</label><input type="tel" id="phone" name="phone" maxlength="30" autocomplete="tel" placeholder="(555) 123-4567"></div>
           <div class="field"><label for="bizEmail">Business email</label><input type="email" id="bizEmail" name="bizEmail" maxlength="80" placeholder="hello@yourbusiness.com"></div>
@@ -209,7 +247,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--muted);fo
       </fieldset>
 
       <fieldset class="card">
-        <legend>Look and feel <span>STEP 4 OF 4</span></legend>
+        <legend>Look and feel <span>STEP 5 OF 5</span></legend>
         <div class="field"><span class="lbl">Your logo <span class="hint">(optional)</span></span>
           <div class="logo-drop" id="logoDrop">
             <img id="logoThumb" alt="Your logo" hidden>
@@ -264,7 +302,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--muted);fo
       </div>
       <div class="browser" id="browser">
         <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url" id="url">https://<b>yourbusiness.com</b></div></div>
-        <iframe id="preview" title="Preview of your website" sandbox="allow-popups allow-popups-to-escape-sandbox"></iframe>
+        <iframe id="preview" title="Preview of your website" sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
       </div>
       <p class="hint">This is a quick preview. Your finished site gets your own photos, logo and as many pages as you need.</p>
     </section>
@@ -396,6 +434,60 @@ $("logoRemove").addEventListener("click", function(){
 $("logoDrop").addEventListener("drop", function(e){ loadLogo(e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]); });
 $("hex").addEventListener("input", function(){ $("customRadio").checked=true; $("hexLabel").textContent=this.value.toUpperCase(); soon(); });
 
+/* ---------- photos: shrink each one in the browser, keep them for this visit ---------- */
+var PHOTOS={ cover:null, about:null, gallery:[] };
+var SIZES={ cover:1600, about:1100, gallery:900 };
+function savePhotos(){ try{ sessionStorage.setItem("pinservs_photos", JSON.stringify(PHOTOS)); }catch(e){} }
+function photoError(m){ $("photoErr").textContent=m; $("photoErr").hidden=!m; }
+function shrink(file, max){
+  return new Promise(function(ok, no){
+    if(!file || !/^image\//.test(file.type)){ return no(/hei[cf]/i.test(file&&file.name||"") ? "iPhone HEIC photos can't be shown in a browser. On your iPhone, go to Settings → Camera → Formats → Most Compatible, or share the photo as a JPG." : "That file isn't a photo we can use. Choose a JPG or PNG."); }
+    if(file.size>20*1024*1024) return no("That photo is over 20 MB. Choose a smaller one.");
+    var url=URL.createObjectURL(file), img=new Image();
+    img.onload=function(){
+      var w=img.naturalWidth, h=img.naturalHeight, sc=Math.min(1,max/Math.max(w,h)), cv=document.createElement("canvas");
+      cv.width=Math.round(w*sc); cv.height=Math.round(h*sc);
+      var x=cv.getContext("2d"); x.fillStyle="#fff"; x.fillRect(0,0,cv.width,cv.height); x.drawImage(img,0,0,cv.width,cv.height);
+      URL.revokeObjectURL(url); ok(cv.toDataURL("image/jpeg",0.8));
+    };
+    img.onerror=function(){ URL.revokeObjectURL(url); no(/hei[cf]/i.test(file.name) ? "iPhone HEIC photos can't be shown in a browser. On your iPhone, go to Settings → Camera → Formats → Most Compatible, or share the photo as a JPG." : "We couldn't open "+file.name+". Try a JPG or PNG."); };
+    img.src=url;
+  });
+}
+function addPhotos(slot, files){
+  photoError("");
+  files=Array.prototype.slice.call(files||[]); if(!files.length) return;
+  if(slot==="gallery"){
+    var room=8-PHOTOS.gallery.length;
+    if(room<=0){ photoError("The gallery holds 8 photos. Remove one to add another."); return; }
+    if(files.length>room) photoError("Only "+room+" more photo"+(room>1?"s":"")+" fit in the gallery, so we added the first "+room+".");
+    files=files.slice(0,room);
+  } else files=files.slice(0,1);
+  Promise.all(files.map(function(f){ return shrink(f, SIZES[slot]).then(function(u){ return u; }, function(m){ photoError(m); return null; }); })).then(function(urls){
+    urls=urls.filter(Boolean); if(!urls.length) return;
+    if(slot==="gallery") PHOTOS.gallery=PHOTOS.gallery.concat(urls); else PHOTOS[slot]=urls[0];
+    savePhotos(); showPhotos(); render(); track("photos_added",{slot:slot, count:urls.length});
+  });
+}
+function showPhotos(){
+  ["cover","about"].forEach(function(k){
+    $("thumb-"+k).innerHTML = PHOTOS[k] ? '<img src="'+PHOTOS[k]+'" alt="">' : '<span>No photo yet</span>';
+    document.querySelector('[data-remove="'+k+'"]').hidden=!PHOTOS[k];
+  });
+  $("galGrid").innerHTML=PHOTOS.gallery.map(function(u,i){ return '<li><img src="'+u+'" alt="Gallery photo '+(i+1)+'"><button type="button" data-gal="'+i+'" aria-label="Remove gallery photo '+(i+1)+'">×</button></li>'; }).join("");
+  $("galCount").textContent = PHOTOS.gallery.length ? "("+PHOTOS.gallery.length+" of 8)" : "(up to 8 photos)";
+}
+["cover","about","gallery"].forEach(function(k){
+  $("file-"+k).addEventListener("change", function(){ addPhotos(k, this.files); this.value=""; });
+  var zone=$("slot-"+k);
+  ["dragenter","dragover"].forEach(function(ev){ zone.addEventListener(ev,function(e){ e.preventDefault(); zone.classList.add("over"); }); });
+  ["dragleave","drop"].forEach(function(ev){ zone.addEventListener(ev,function(e){ e.preventDefault(); zone.classList.remove("over"); }); });
+  zone.addEventListener("drop", function(e){ addPhotos(k, e.dataTransfer&&e.dataTransfer.files); });
+});
+document.querySelectorAll("[data-remove]").forEach(function(b){ b.addEventListener("click", function(){ PHOTOS[b.dataset.remove]=null; savePhotos(); showPhotos(); render(); }); });
+$("galGrid").addEventListener("click", function(e){ var b=e.target.closest("[data-gal]"); if(!b) return; PHOTOS.gallery.splice(+b.dataset.gal,1); photoError(""); savePhotos(); showPhotos(); render(); });
+function photoCount(){ return (PHOTOS.cover?1:0)+(PHOTOS.about?1:0)+PHOTOS.gallery.length; }
+
 /* ---------- domain: tidy what they type, check the format, suggest names ---------- */
 function domainUi(){
   var need=(document.querySelector('input[name=domainStatus]:checked')||{}).value==="need";
@@ -440,6 +532,8 @@ function build(d){
   var col=/^#[0-9a-f]{6}$/i.test(d.hex||"") ? d.hex : (COLORS.filter(function(k){return k.id===d.color;})[0]||COLORS[0]).c;
   var onC = lum(col)>0.45 ? "#111318" : "#FFFFFF";
   var logo = /^data:image\/png;base64,[A-Za-z0-9+\/=]+$/.test(d.logo||"") ? d.logo : "";
+  var okImg = function(u){ return /^data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/.test(u||"") ? u : ""; };
+  var P = d.photos||{}, cover=okImg(P.cover), aboutImg=okImg(P.about), gal=(P.gallery||[]).map(okImg).filter(Boolean).slice(0,8);
   var cta=CTA[d.cta]||CTA[p.cta];
   var tel=(d.phone||"").replace(/[^\d+]/g,"");
   var ctaHref = d.cta==="call"||!d.cta ? (tel?"tel:"+tel:"#contact") : "#contact";
@@ -469,6 +563,12 @@ function build(d){
   '.btn{display:inline-block;background:var(--c);color:'+onC+';text-decoration:none;font-weight:700;padding:14px 26px;border-radius:'+(st==="modern"?"999px":rad)+';'+(st==="bold"?"text-transform:uppercase;letter-spacing:.06em;font-size:.9rem;":"")+'}'+
   '.btn.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}'+
   '.hero{padding:'+(st==="classic"?"90px 0 80px;text-align:center":"72px 0 80px")+';'+(st==="bold"?"border-bottom:6px solid var(--c);":"")+'}'+
+  '.hero.hascover{background-size:cover;background-position:center;padding-top:'+(st==="classic"?"150px":"130px")+';padding-bottom:'+(st==="classic"?"130px":"110px")+'}'+
+  '.hero.hascover h1,.hero.hascover p{color:#fff}.hero.hascover p{opacity:.92}.hero.hascover .btn.ghost{color:#fff;border-color:rgba(255,255,255,.7)}'+
+  '.pic.hasphoto{background:none}.pic.hasphoto img{width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;border-radius:var(--r)}'+
+  '.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.gal figure{margin:0;aspect-ratio:4/3;border-radius:var(--r);overflow:hidden;background:color-mix(in srgb,var(--c) 12%,var(--card))}'+
+  '.gal img{width:100%;height:100%;object-fit:cover;display:block}.gal .empty{display:grid;place-items:center;color:var(--mut);font-size:.9rem;border:1.5px dashed var(--line)}'+
+  '@media(max-width:720px){.gal{grid-template-columns:repeat(2,1fr)}}'+
   '.hero h1{font-size:clamp(2.4rem,6vw,'+(st==="bold"?"5.2rem":"4rem")+');font-weight:'+(st==="classic"?"500":"800")+';max-width:'+(st==="classic"?"none":"14em")+';'+(st==="bold"?"text-transform:uppercase;":"")+'}'+
   '.hero p{margin:20px '+(st==="classic"?"auto":"0")+' 0;color:var(--mut);font-size:1.2rem;max-width:34em}'+
   '.hero .row{margin-top:30px;display:flex;gap:12px;flex-wrap:wrap;'+(st==="classic"?"justify-content:center":"")+'}'+
@@ -492,13 +592,16 @@ function build(d){
   '</style></head><body>'+
   '<div class="band"></div>'+
   '<header class="w"><nav><div class="brand">'+(logo?'<img class="logoimg" src="'+esc(logo)+'" alt="'+esc(name.t)+' logo">':'<span class="mark">'+esc(initials(name.t))+'</span>')+'<span'+phCls(name)+'>'+esc(name.t)+'</span></div>'+
-  '<div class="links"><a href="#services">Services</a><a href="#about">About</a><a href="#contact">Contact</a></div></nav></header>'+
-  '<div class="hero"><div class="w"><h1'+phCls(name)+'>'+esc(name.t)+'</h1><p'+phCls(tag)+'>'+esc(tag.t)+'</p>'+
+  '<div class="links"><a href="#services">Services</a><a href="#about">About</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a></div></nav></header>'+
+  '<div class="hero'+(cover?' hascover':'')+'"'+(cover?' style="background-image:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.6)),url('+esc(cover)+')"':'')+'><div class="w"><h1'+phCls(name)+'>'+esc(name.t)+'</h1><p'+phCls(tag)+'>'+esc(tag.t)+'</p>'+
   '<div class="row"><a class="btn" href="'+esc(ctaHref)+'">'+esc(cta)+'</a><a class="btn ghost" href="#services">See what we offer</a></div></div></div>'+
   '<section id="services"><div class="w"><span class="kick">What we do</span><h2>Services</h2><div class="grid">'+
   svcs.map(function(s,i){ return '<div class="svc'+(d.services?"":" ph")+'"><div class="n">'+(i+1)+'</div><h3>'+esc(s.h)+'</h3>'+(s.p?'<p>'+esc(s.p)+'</p>':'')+'</div>'; }).join("")+
   '</div></div></section>'+
-  '<section id="about" style="padding-top:0"><div class="w about"><div class="pic'+(logo?" haslogo":"")+'" aria-hidden="true">'+(logo?'<img src="'+esc(logo)+'" alt="">':esc(initials(name.t)))+'</div><div><span class="kick" style="text-align:left">About us</span><h2 style="text-align:left">Why customers choose '+esc(name.ph?"us":name.t)+'</h2><p'+phCls(about)+'>'+esc(about.t)+'</p></div></div></section>'+
+  '<section id="about" style="padding-top:0"><div class="w about"><div class="pic'+(aboutImg?" hasphoto":logo?" haslogo":"")+'" aria-hidden="true">'+(aboutImg?'<img src="'+esc(aboutImg)+'" alt="">':logo?'<img src="'+esc(logo)+'" alt="">':esc(initials(name.t)))+'</div><div><span class="kick" style="text-align:left">About us</span><h2 style="text-align:left">Why customers choose '+esc(name.ph?"us":name.t)+'</h2><p'+phCls(about)+'>'+esc(about.t)+'</p></div></div></section>'+
+  '<section id="gallery" style="padding-top:0"><div class="w"><span class="kick">See for yourself</span><h2>Gallery</h2><div class="gal">'+
+  (gal.length ? gal.map(function(u){ return '<figure><img src="'+esc(u)+'" alt="" loading="lazy"></figure>'; }).join("") : '<figure class="empty ph">Your photo</figure><figure class="empty ph">Your photo</figure><figure class="empty ph">Your photo</figure>')+
+  '</div></div></section>'+
   '<section class="contact" id="contact"><div class="w"><span class="kick">Get in touch</span><h2>Contact us</h2><div class="cgrid">'+
   '<div><h3>Call</h3><p'+(d.phone?"":' class="ph"')+'>'+(d.phone?'<a href="tel:'+esc(tel)+'">'+esc(d.phone)+'</a>':"(555) 123-4567")+'</p></div>'+
   '<div><h3>Email</h3><p'+(d.bizEmail?"":' class="ph"')+'>'+esc(d.bizEmail||"hello@yourbusiness.com")+'</p></div>'+
@@ -512,7 +615,9 @@ function build(d){
 /* ---------- live render (debounced) ---------- */
 var frame=$("preview"), t;
 function render(){
-  var d=read(); d.logo=LOGO.data;
+  var d=read(); d.logo=LOGO.data; d.photos=PHOTOS;
+  var y=0; try{ y=frame.contentWindow.scrollY||0; }catch(e){}
+  frame.onload=function(){ try{ if(y) frame.contentWindow.scrollTo(0,y); }catch(e){} };
   frame.srcdoc=build(d); domainUi();
   var dom=(d.domain||"").replace(/^https?:\/\//,"").replace(/\/.*$/,"");
   if(!dom && d.biz) dom=d.biz.toLowerCase().replace(/[^a-z0-9]+/g,"")+".com";
@@ -541,7 +646,7 @@ function track(ev, extra){ try{ if(typeof gtag==="function") gtag("event", ev, e
 function showLink(url, sent){
   $("shareUrl").value=url; $("done").hidden=false;
   $("doneTitle").textContent = sent ? "Your email app should be open now" : "Here's your preview link";
-  $("doneText").innerHTML = sent ? "Press send in your email app to reach us"+(LOGO.data?", and attach your logo file so we can use the full-quality version":"")+". If nothing opened, email this link to <b>support@pinservs.com</b>." : "Anyone with this link sees your preview. Bookmark it or send it to someone for a second opinion.";
+  $("doneText").innerHTML = sent ? "Press send in your email app to reach us"+((LOGO.data||photoCount())?", and attach your "+(LOGO.data&&photoCount()?"logo and photos":LOGO.data?"logo file":"photos")+" so we can use the full-quality versions":"")+". If nothing opened, email this link to <b>support@pinservs.com</b>." : "Anyone with this link sees your preview. Bookmark it or send it to someone for a second opinion.";
 }
 $("shareBtn").addEventListener("click", function(){
   var d=read(); if(!d.biz){ fail(["Add your business name first."], ["biz"]); return; }
@@ -575,7 +680,8 @@ $("brief").addEventListener("submit", function(e){
     "Business: "+d.biz, "Type: "+ind,
     d.domainStatus==="need" ? ("Domain: I need one"+(d.domain?" (I'd like "+d.domain+")":"")) : ("Domain: I already own "+(d.domain||"(not entered yet)")),
     "Style: "+d.style+", brand color: "+d.hex+(d.color.indexOf("logo")===0?" (matched from my logo)":""),
-    LOGO.data ? "Logo: I uploaded it in the preview. I'll attach the original file to this email." : "", "",
+    LOGO.data ? "Logo: I uploaded it in the preview. I'll attach the original file to this email." : "",
+    photoCount() ? "Photos: I added "+[PHOTOS.cover?"a cover photo":"",PHOTOS.about?"an about photo":"",PHOTOS.gallery.length?PHOTOS.gallery.length+" gallery photo"+(PHOTOS.gallery.length>1?"s":""):""].filter(Boolean).join(", ")+" in the preview. I'll attach the originals to this email." : "", "",
     "My name: "+d.name, "My email: "+d.email, d.phone?"Business phone: "+d.phone:"",
     d.notes?"\nNotes:\n"+d.notes:""
   ].filter(function(x,i,a){ return x!=="" || a[i-1]!==""; }).join("\n");
@@ -590,6 +696,7 @@ $("brief").addEventListener("submit", function(e){
 var start=fromHash();
 if(!start){ try{ start=JSON.parse(sessionStorage.getItem("pinservs_brief")||"null"); }catch(e){} }
 if(start) write(start);
+try{ var savedPh=JSON.parse(sessionStorage.getItem("pinservs_photos")||"null"); if(savedPh){ PHOTOS={cover:savedPh.cover||null, about:savedPh.about||null, gallery:(savedPh.gallery||[]).slice(0,8)}; showPhotos(); } }catch(e){}
 try{ var savedLogo=JSON.parse(sessionStorage.getItem("pinservs_logo")||"null"); if(savedLogo&&savedLogo.data){ LOGO=savedLogo; showLogo(false); if(start&&/^logo\d$/.test(start.color||"")){ var r=document.querySelector('input[name=color][value='+start.color+']'); if(r) r.checked=true; } } }catch(e){}
 setPlaceholders(); render();
 if(fromHash()) track("preview_link_opened");
