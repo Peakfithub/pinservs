@@ -141,6 +141,29 @@ textarea{min-height:110px;resize:vertical}
 .out p{font-size:.92rem;color:var(--muted)}
 .err{color:var(--pin);font-size:.9rem}
 @media (max-width:860px){.contact{grid-template-columns:1fr}}
+.proj-head{scroll-margin-top:96px;display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:32px}
+.ptabs{display:flex;gap:4px;background:var(--line);padding:4px;border-radius:999px}
+.ptabs button{border:0;background:transparent;border-radius:999px;padding:10px 18px;font:600 .95rem var(--f-body);color:var(--muted);cursor:pointer}
+.ptabs button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(17,23,46,.15)}
+.re-intro{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:end;margin-bottom:40px}
+.re-intro h2{font-size:clamp(2rem,4.2vw,3.1rem);font-weight:700}
+.re-intro p{color:var(--muted);font-size:1.08rem}
+.re-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:2px solid var(--ink)}
+.re-item{padding:26px 26px 30px 0;display:grid;gap:10px;align-content:start;border-bottom:1px solid var(--line);min-width:0}
+.re-item:not(:nth-child(3n+1)){padding-left:26px;border-left:1px solid var(--line)}
+.re-item b{font-family:var(--f-mono);font-weight:500;font-size:.78rem;color:var(--pin);letter-spacing:.06em}
+.re-item h3{font-size:1.3rem;font-weight:700}
+.re-item p{color:var(--muted);font-size:.97rem}
+.re-keys{margin-top:40px;display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;align-items:start}
+.re-keys h3{font-size:1.5rem;font-weight:700}
+.re-keys ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:14px 28px}
+.re-keys li{display:grid;grid-template-columns:22px 1fr;gap:8px;font-size:.98rem}
+.re-keys li::before{content:"";width:16px;height:16px;margin-top:.25em;border-radius:50%;background:var(--accent-soft);box-shadow:inset 0 0 0 5px var(--accent)}
+.re-keys li span{color:var(--muted)}
+.re-cta{margin-top:40px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:24px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.re-cta p{flex:1 1 260px;color:var(--muted)}
+@media (max-width:860px){.re-intro,.re-keys{grid-template-columns:1fr;gap:16px}.re-grid{grid-template-columns:1fr}.re-item,.re-item:not(:nth-child(3n+1)){padding:22px 0;border-left:0}}
+@media (max-width:520px){.re-keys ul{grid-template-columns:1fr}}
 @media (max-width:480px){.two{grid-template-columns:1fr}form{padding:20px}}
 
 footer{border-top:1px solid var(--line);padding-block:32px;color:var(--muted);font-size:.9rem}
@@ -169,6 +192,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <ul>
       <li><a href="#services">Services</a></li>
       <li><a href="#process">How we work</a></li>
+      <li><a href="#realestate">Real estate</a></li>
       <li><a href="#faq">FAQ</a></li>
     </ul>
     <a class="btn" href="start/">Preview your website</a>
@@ -306,10 +330,48 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   </section>
 
   <section id="contact" style="padding-top:0">
-    <div class="wrap contact">
+    <div class="wrap proj-head" id="realestate">
+      <p class="eyebrow">Start a project</p>
+      <div class="ptabs" role="tablist" aria-label="Project type">
+        <button type="button" role="tab" id="tab-any" aria-controls="panel-any" aria-selected="true">Any business</button>
+        <button type="button" role="tab" id="tab-re" aria-controls="panel-re" aria-selected="false" tabindex="-1">Real estate agents</button>
+      </div>
+    </div>
+
+    <div class="wrap" id="panel-re" role="tabpanel" aria-labelledby="tab-re" hidden>
+      <div class="re-intro">
+        <h2>Websites that win listings and bring you buyers.</h2>
+        <p>Your brokerage page looks like every other agent's. We build you a site of your own that shows off your listings, captures seller and buyer leads, and stays yours wherever your career takes you.</p>
+      </div>
+      <div class="re-grid">
+        <article class="re-item"><b>LISTINGS</b><h3>Your homes, front and center</h3><p>Featured listings with photos, price, beds and baths. We can also connect MLS search through your IDX provider, so buyers browse your whole market without leaving your site.</p></article>
+        <article class="re-item"><b>LEADS</b><h3>Seller and buyer leads, sent to you</h3><p>A free home valuation form for sellers, showing requests and buyer inquiries, delivered straight to your email and phone.</p></article>
+        <article class="re-item"><b>BRAND</b><h3>You, not a brokerage template</h3><p>Your headshot, bio, logo and colors on your own domain, like <span style="font-family:var(--f-mono)">janesmithhomes.com</span>, with email to match.</p></article>
+        <article class="re-item"><b>LOCAL SEARCH</b><h3>Neighborhood pages</h3><p>Guides to the communities you serve: schools, parks, recent sales. It's the local content people find when they search for homes in your town.</p></article>
+        <article class="re-item"><b>COMPLIANCE</b><h3>The fine print, handled</h3><p>Brokerage name, license number and the Equal Housing Opportunity logo in your footer, on every page, the way your broker expects.</p></article>
+        <article class="re-item"><b>ADVERTISING</b><h3>Ads for listings and open houses</h3><p>Google and Facebook campaigns that point to your listings. Housing ads on Facebook and Instagram run under Meta's Special Ad Category, and we set them up that way from the start.</p></article>
+      </div>
+      <div class="re-keys">
+        <h3>Why agents work with Pinservs</h3>
+        <ul>
+          <li><div><b>You own it.</b> <span>Your domain and site are registered to you. Change brokerages and your website comes with you.</span></div></li>
+          <li><div><b>Built for phones.</b> <span>Buyers scroll listings on their phones, so every page is designed for small screens first.</span></div></li>
+          <li><div><b>Reviews that sell.</b> <span>Client testimonials and your Google reviews where new clients see them.</span></div></li>
+          <li><div><b>Google Business Profile.</b> <span>Set up and linked to your site so you show on the map in your area.</span></div></li>
+          <li><div><b>See it before you pay.</b> <span>Build a free preview of your agent site in a few minutes.</span></div></li>
+          <li><div><b>One team.</b> <span>Domain, website and advertising from the same people, so nothing falls between vendors.</span></div></li>
+        </ul>
+      </div>
+      <div class="re-cta">
+        <p><b style="color:var(--ink)">Ready to see yours?</b> Our builder is set up for agents: listings gallery, home valuation button and license details included.</p>
+        <a class="btn" href="start/?industry=realestate">Build my agent website preview</a>
+        <button class="btn ghost" type="button" id="reAsk">Ask about agent packages</button>
+      </div>
+    </div>
+
+    <div class="wrap contact" id="panel-any" role="tabpanel" aria-labelledby="tab-any">
       <div class="side">
-        <p class="eyebrow">Start a project</p>
-        <h2 style="margin-top:10px">Tell us where you want to be found.</h2>
+        <h2>Tell us where you want to be found.</h2>
         <p>Choose the services you're interested in and a few details about your business. Want to see your site first? <a href="start/">Build a free preview</a> in a few minutes.</p>
         <div class="mail"><a id="addr" href="mailto:support@pinservs.com" style="user-select:all;background:var(--accent-soft);padding:6px 10px;border-radius:6px;text-decoration:none">support@pinservs.com</a><button class="mini" type="button" id="copyAddr">Copy</button></div>
       </div>
@@ -348,6 +410,25 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 <script>
 (function(){
+  // Project tabs: any business / real estate agents
+  var tabs=[document.getElementById("tab-any"), document.getElementById("tab-re")];
+  function showTab(re, focus){
+    tabs.forEach(function(t,i){ var on=(i===1)===re; t.setAttribute("aria-selected", on); t.tabIndex=on?0:-1; document.getElementById(t.getAttribute("aria-controls")).hidden=!on; });
+    if(focus) tabs[re?1:0].focus();
+    if(re && typeof gtag==="function") gtag("event","real_estate_tab_viewed");
+  }
+  tabs[0].addEventListener("click", function(){ showTab(false); });
+  tabs[1].addEventListener("click", function(){ showTab(true); });
+  tabs.forEach(function(t){ t.addEventListener("keydown", function(e){ if(e.key==="ArrowRight"||e.key==="ArrowLeft"){ e.preventDefault(); showTab(t===tabs[0], true); } }); });
+  function fromHash(){ if(location.hash==="#realestate") showTab(true); }
+  fromHash(); window.addEventListener("hashchange", fromHash);
+  document.getElementById("reAsk").addEventListener("click", function(){
+    showTab(false);
+    var msg=document.getElementById("msg"); if(!msg.value) msg.value="I'm a real estate agent and I'd like a website for my listings and leads. ";
+    document.getElementById("s-web").checked=true;
+    document.getElementById("name").focus();
+  });
+
   // Hero: cycle through example addresses
   var names=["yourbusiness.com","mainstreetbakery.com","rivercityplumbing.net","brightsmiledental.com"];
   var el=document.getElementById("typed");

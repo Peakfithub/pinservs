@@ -206,6 +206,7 @@ body.viewmode .viewbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-ind
         </div>
         <div class="field"><label for="industry">What kind of business?</label>
           <select id="industry" name="industry">
+            <option value="realestate">Real estate agent or broker</option>
             <option value="food">Restaurant, café or bakery</option>
             <option value="home">Home services (plumbing, cleaning, landscaping…)</option>
             <option value="fitness">Fitness, gym or coaching</option>
@@ -228,6 +229,8 @@ body.viewmode .viewbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-ind
             <option value="book">Book an appointment</option>
             <option value="visit">Visit us</option>
             <option value="order">Order now</option>
+            <option value="valuation">Get my home's value</option>
+            <option value="showing">Schedule a showing</option>
           </select></div>
       </fieldset>
 
@@ -261,7 +264,8 @@ body.viewmode .viewbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-ind
           <div class="field"><label for="phone">Business phone</label><input type="tel" id="phone" name="phone" maxlength="30" autocomplete="tel" placeholder="(555) 123-4567"></div>
           <div class="field"><label for="bizEmail">Business email</label><input type="email" id="bizEmail" name="bizEmail" maxlength="80" placeholder="hello@yourbusiness.com"></div>
         </div>
-        <div class="field"><label for="area">Address or service area</label><input type="text" id="area" name="area" maxlength="120" placeholder="123 Main St, Rockport, TX  ·  or  ·  Serving the Coastal Bend"></div>
+        <div class="field" id="licenseField" hidden><label for="license">Brokerage and license number</label><input type="text" id="license" name="license" maxlength="120" placeholder="Coastal Realty Group · TX License #0123456"><span class="hint">Shown in your site's footer with the Equal Housing Opportunity notice.</span></div>
+        <div class="field"><label for="area" id="areaLbl">Address or service area</label><input type="text" id="area" name="area" maxlength="120" placeholder="123 Main St, Rockport, TX  ·  or  ·  Serving the Coastal Bend"></div>
         <div class="field"><label for="hours">Opening hours</label><textarea id="hours" name="hours" maxlength="300" style="min-height:64px" placeholder="Mon–Fri 8am–6pm&#10;Sat 9am–2pm"></textarea></div>
       </fieldset>
 
@@ -362,10 +366,11 @@ var IND = {
   beauty: { tag:"Look good. Feel even better.", about:"A relaxing space with skilled stylists who listen to what you want.", services:["Cuts and styling","Color and highlights","Spa and nail care"], cta:"book" },
   pro:    { tag:"Clear advice for confident decisions.", about:"We help local businesses and families handle the details, so you can focus on what matters.", services:["Consultations - understand your options","Ongoing support - we're here when you need us","Planning - get ready for what's next"], cta:"call" },
   shop:   { tag:"Quality goods, chosen with care.", about:"An independent shop with hand-picked products and staff who know them well.", services:["New arrivals every week","Gift wrapping and gift cards","Local pickup and delivery"], cta:"visit" },
+  realestate:{ tag:"Helping you buy and sell with confidence.", about:"I'm a local agent who knows these neighborhoods street by street. Whether you're buying your first home or selling the one you raised your family in, I'll guide you from first showing to closing day.", services:["Buying a home - tours, offers and tough negotiations","Selling your home - pricing, staging and marketing that gets results","Free home valuation - find out what your home is worth today"], cta:"valuation" },
   other:  { tag:"Proudly serving our community.", about:"Tell people who you are, how you started and why customers keep coming back.", services:["Your first service","Your second service","Your third service"], cta:"call" }
 };
-var CTA = { call:"Call us", quote:"Get a free quote", book:"Book an appointment", visit:"Visit us", order:"Order now" };
-var FIELDS = ["biz","industry","tagline","about","services","cta","phone","bizEmail","area","hours","domain","name","email","notes"];
+var CTA = { call:"Call us", quote:"Get a free quote", book:"Book an appointment", visit:"Visit us", order:"Order now", valuation:"Get my home's value", showing:"Schedule a showing" };
+var FIELDS = ["biz","industry","tagline","about","services","cta","phone","bizEmail","area","hours","domain","license","name","email","notes"];
 var $ = function(id){ return document.getElementById(id); };
 
 /* swatches */
@@ -394,7 +399,11 @@ function write(d){
   else if(/^#[0-9a-f]{6}$/i.test(d.hex||"")){ $("hex").value=d.hex; $("hexLabel").textContent=d.hex.toUpperCase(); $("customRadio").checked=true; }
 }
 function setPlaceholders(){
-  var p=IND[$("industry").value]||IND.other;
+  var p=IND[$("industry").value]||IND.other, re=$("industry").value==="realestate";
+  $("licenseField").hidden=!re;
+  document.querySelector('label[for="file-about"]').textContent = re ? "Your professional headshot" : "You, your team or your storefront";
+  document.querySelector('label[for="file-gallery"]').textContent = re ? "Your current listings or recently sold homes. Pick several at once." : "Show off your work, food, products or space. Pick several at once.";
+  $("areaLbl").textContent = re ? "Office address or areas you serve" : "Address or service area";
   $("tagline").placeholder=p.tag; $("about").placeholder=p.about; $("services").placeholder=p.services.join("\n");
 }
 
@@ -588,6 +597,7 @@ function build(d){
   var onC = lum(col)>0.45 ? "#111318" : "#FFFFFF";
   var logo = /^data:image\/png;base64,[A-Za-z0-9+\/=]+$/.test(d.logo||"") ? d.logo : "";
   var okImg = function(u){ return /^data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/.test(u||"") ? u : ""; };
+  var isRE = d.industry==="realestate";
   var P = d.photos||{}, cover=okImg(P.cover), aboutImg=okImg(P.about), gal=(P.gallery||[]).map(okImg).filter(Boolean).slice(0,8);
   var cta=CTA[d.cta]||CTA[p.cta];
   var tel=(d.phone||"").replace(/[^\d+]/g,"");
@@ -643,27 +653,28 @@ function build(d){
   '.cgrid h3{font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--c);margin-bottom:8px;font-family:'+fb+'}'+
   '.cgrid p{margin:0}.cgrid a{color:inherit}'+
   'footer{padding:28px 0;color:var(--mut);font-size:.88rem;border-top:1px solid var(--line)}'+
+  '.lic{margin:0 0 10px;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;color:var(--fg)}.eho{display:inline-flex;align-items:center;gap:6px;font-weight:600}'+
   '@media(max-width:720px){.links{display:none}.about{grid-template-columns:1fr}section{padding:52px 0}.hero{padding:48px 0 56px}}'+
   '</style></head><body>'+
   '<div class="band"></div>'+
   '<header class="w"><nav><div class="brand">'+(logo?'<img class="logoimg" src="'+esc(logo)+'" alt="'+esc(name.t)+' logo">':'<span class="mark">'+esc(initials(name.t))+'</span>')+'<span'+phCls(name)+'>'+esc(name.t)+'</span></div>'+
-  '<div class="links"><a href="#services">Services</a><a href="#about">About</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a></div></nav></header>'+
+  '<div class="links"><a href="#services">Services</a><a href="#about">About</a><a href="#gallery">'+(isRE?"Listings":"Gallery")+'</a><a href="#contact">Contact</a></div></nav></header>'+
   '<div class="hero'+(cover?' hascover':'')+'"'+(cover?' style="background-image:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.6)),url('+esc(cover)+')"':'')+'><div class="w"><h1'+phCls(name)+'>'+esc(name.t)+'</h1><p'+phCls(tag)+'>'+esc(tag.t)+'</p>'+
   '<div class="row"><a class="btn" href="'+esc(ctaHref)+'">'+esc(cta)+'</a><a class="btn ghost" href="#services">See what we offer</a></div></div></div>'+
   '<section id="services"><div class="w"><span class="kick">What we do</span><h2>Services</h2><div class="grid">'+
   svcs.map(function(s,i){ return '<div class="svc'+(d.services?"":" ph")+'"><div class="n">'+(i+1)+'</div><h3>'+esc(s.h)+'</h3>'+(s.p?'<p>'+esc(s.p)+'</p>':'')+'</div>'; }).join("")+
   '</div></div></section>'+
   '<section id="about" style="padding-top:0"><div class="w about"><div class="pic'+(aboutImg?" hasphoto":logo?" haslogo":"")+'" aria-hidden="true">'+(aboutImg?'<img src="'+esc(aboutImg)+'" alt="">':logo?'<img src="'+esc(logo)+'" alt="">':esc(initials(name.t)))+'</div><div><span class="kick" style="text-align:left">About us</span><h2 style="text-align:left">Why customers choose '+esc(name.ph?"us":name.t)+'</h2><p'+phCls(about)+'>'+esc(about.t)+'</p></div></div></section>'+
-  '<section id="gallery" style="padding-top:0"><div class="w"><span class="kick">See for yourself</span><h2>Gallery</h2><div class="gal">'+
+  '<section id="gallery" style="padding-top:0"><div class="w"><span class="kick">'+(isRE?"On the market":"See for yourself")+'</span><h2>'+(isRE?"Featured listings":"Gallery")+'</h2><div class="gal">'+
   (gal.length ? gal.map(function(u){ return '<figure><img src="'+esc(u)+'" alt="" loading="lazy"></figure>'; }).join("") : '<figure class="empty ph">Your photo</figure><figure class="empty ph">Your photo</figure><figure class="empty ph">Your photo</figure>')+
   '</div></div></section>'+
   '<section class="contact" id="contact"><div class="w"><span class="kick">Get in touch</span><h2>Contact us</h2><div class="cgrid">'+
   '<div><h3>Call</h3><p'+(d.phone?"":' class="ph"')+'>'+(d.phone?'<a href="tel:'+esc(tel)+'">'+esc(d.phone)+'</a>':"(555) 123-4567")+'</p></div>'+
   '<div><h3>Email</h3><p'+(d.bizEmail?"":' class="ph"')+'>'+esc(d.bizEmail||"hello@yourbusiness.com")+'</p></div>'+
-  '<div><h3>Find us</h3><p'+(d.area?"":' class="ph"')+'>'+esc(d.area||"Your address or service area")+'</p></div>'+
+  '<div><h3>'+(isRE?"Office":"Find us")+'</h3><p'+(d.area?"":' class="ph"')+'>'+esc(d.area||"Your address or service area")+'</p></div>'+
   '<div><h3>Hours</h3><p'+(hours.length?"":' class="ph"')+'>'+(hours.length?hours.map(esc).join("<br>"):"Mon–Fri 9am–5pm")+'</p></div>'+
   '</div><p style="margin-top:32px"><a class="btn" href="'+esc(ctaHref)+'">'+esc(cta)+'</a></p></div></section>'+
-  '<footer><div class="w">© 2026 '+esc(name.t)+(d.domain?' · '+esc(d.domain):'')+' · Website by Pinservs</div></footer>'+
+  '<footer><div class="w">'+(isRE?'<p class="lic"><span'+(d.license?'':' class="ph"')+'>'+esc(d.license||"Your Brokerage · License #0000000")+'</span><span class="eho"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 2 1 11h3v11h16V11h3L12 2zm-5 11h10v2H7v-2zm0 4h10v2H7v-2z"/></svg>Equal Housing Opportunity</span></p>':'')+'© 2026 '+esc(name.t)+(d.domain?' · '+esc(d.domain):'')+' · Website by Pinservs</div></footer>'+
   '</body></html>';
 }
 
@@ -682,7 +693,7 @@ function render(){
 function soon(){ clearTimeout(t); t=setTimeout(render, 180); }
 $("brief").addEventListener("input", soon);
 document.querySelectorAll('input[name=domainStatus]').forEach(function(r){ r.addEventListener("change", function(){ domainUi(); if(this.value==="need" && !$("domain").value) $("domain").focus(); }); });
-$("brief").addEventListener("change", function(e){ if(e.target.id==="industry") setPlaceholders(); render(); });
+$("brief").addEventListener("change", function(e){ if(e.target.id==="industry"){ setPlaceholders(); var p=IND[e.target.value]; if(p && !$("brief").dataset.ctaTouched) $("cta").value=p.cta; } if(e.target.id==="cta") $("brief").dataset.ctaTouched="1"; render(); });
 
 /* ---------- preview size + mobile tabs ---------- */
 function size(phone){ $("browser").classList.toggle("phone", phone); $("viewDesk").setAttribute("aria-pressed", !phone); $("viewPhone").setAttribute("aria-pressed", phone); }
@@ -736,7 +747,7 @@ function sendRequest(d, L){
   var ind=$("industry").options[$("industry").selectedIndex].text;
   var body=[
     "Hi Pinservs,","","I'd like a website. Here's my preview:", url, "",
-    "Business: "+d.biz, "Type: "+ind,
+    "Business: "+d.biz, "Type: "+ind, d.industry==="realestate"&&d.license ? "Brokerage and license: "+d.license : "",
     d.domainStatus==="need" ? ("Domain: I need one"+(d.domain?" (I'd like "+d.domain+")":"")) : ("Domain: I already own "+(d.domain||"(not entered yet)")),
     "Style: "+d.style+", brand color: "+d.hex+(d.color.indexOf("logo")===0?" (matched from my logo)":""),
     LOGO.data ? "Logo: I uploaded it in the preview. I'll attach the original file to this email." : "",
@@ -771,6 +782,7 @@ $("qrCopy").addEventListener("click", function(){
 /* ---------- start: a shared link, then this visit's draft, then blank ---------- */
 fromHash().then(function(link){
 var start=link&&link.data;
+var qInd=(location.search.match(/[?&]industry=([a-z]+)/)||[])[1];
 if(link&&link.view){
   document.body.classList.add("viewmode");
   $("viewEdit").href=BASE+"#"+link.token; $("viewGet").href=BASE+"#"+link.token;
@@ -779,6 +791,7 @@ if(link&&link.view){
 }
 if(!start){ try{ start=JSON.parse(sessionStorage.getItem("pinservs_brief")||"null"); }catch(e){} }
 if(start) write(start);
+else if(qInd && IND[qInd]){ $("industry").value=qInd; $("cta").value=IND[qInd].cta; }
 try{ var savedPh=JSON.parse(sessionStorage.getItem("pinservs_photos")||"null"); if(savedPh){ PHOTOS={cover:savedPh.cover||null, about:savedPh.about||null, gallery:(savedPh.gallery||[]).slice(0,8)}; showPhotos(); } }catch(e){}
 try{ var savedLogo=JSON.parse(sessionStorage.getItem("pinservs_logo")||"null"); if(savedLogo&&savedLogo.data){ LOGO=savedLogo; showLogo(false); if(start&&/^logo\d$/.test(start.color||"")){ var r=document.querySelector('input[name=color][value='+start.color+']'); if(r) r.checked=true; } } }catch(e){}
 setPlaceholders(); render();
