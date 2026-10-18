@@ -302,7 +302,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <p class="eyebrow">Start a project</p>
         <h2 style="margin-top:10px">Tell us where you want to be found.</h2>
         <p>Choose the services you're interested in and a few details about your business. We'll prepare your request so you can send it to us.</p>
-        <div class="mail"><span id="addr">hello@pinservs.com</span><button class="mini" type="button" id="copyAddr">Copy</button></div>
+        <div class="mail"><a id="addr" href="mailto:support@pinservs.com" style="user-select:all;background:var(--accent-soft);padding:6px 10px;border-radius:6px;text-decoration:none">support@pinservs.com</a><button class="mini" type="button" id="copyAddr">Copy</button></div>
       </div>
       <form id="req" novalidate>
         <fieldset>
@@ -323,7 +323,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <button class="btn" type="submit" style="justify-self:start">Prepare my request</button>
         <div class="out" id="out" hidden>
           <pre id="summary"></pre>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button class="mini" type="button" id="copySum">Copy request</button><p>Paste it into an email to the address on the left.</p></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><a class="btn" id="mailSum" href="mailto:support@pinservs.com" style="padding:8px 16px;font-size:.88rem">Send by email</a><button class="mini" type="button" id="copySum">Copy request</button><p>Opens your email app with the request filled in.</p></div>
         </div>
       </form>
     </div>
@@ -375,6 +375,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     if(v("domain"))lines.push("Domain: "+v("domain"));
     if(v("msg"))lines.push("","Details:",v("msg"));
     sum.textContent=lines.join("\n");
+    document.getElementById("mailSum").href="mailto:support@pinservs.com?subject="+encodeURIComponent(lines[0].replace(/^Subject: /,""))+"&body="+encodeURIComponent(lines.slice(2).join("\n"));
     out.hidden=false;
   });
   document.getElementById("copySum").addEventListener("click",function(){copy(sum.textContent,this,sum)});
