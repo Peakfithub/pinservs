@@ -1,23 +1,23 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-18T15:08:00.000Z",
+  "updatedAt": "2026-10-18T17:40:00.000Z",
   "sites": [
     {
       "id": "pinservs",
       "name": "Pinservs",
-      "status": "dns",
+      "status": "live",
       "domain": "pinservs.com",
       "liveUrl": "https://pinservs.com/",
       "repo": "Peakfithub/pinservs",
       "path": "index.html",
       "branch": "main",
       "host": "GitHub Pages",
-      "notes": "DNS moved to GitHub Pages on Oct 18, 2026 (cPanel for rvspalsh.com, Zone Editor). Email for stan@ and support@pinservs.com stays on the cPanel server via mail.pinservs.com. Backup of the old records is in the chat with Claude. Turn on Enforce HTTPS in GitHub Pages once the DNS check passes.",
+      "notes": "Live on GitHub Pages since Oct 18, 2026. DNS is managed in the cPanel for rvspalsh.com (Zone Editor). Email for stan@ and support@pinservs.com stays on the cPanel server via mail.pinservs.com. To do: tick Enforce HTTPS in GitHub \u2192 Settings \u2192 Pages.",
       "gaId": "G-N6DQ2YNXWP",
       "gaInstalledId": "G-N6DQ2YNXWP",
       "reportUrl": null,
       "createdAt": "2026-10-17T10:45:00.000Z",
-      "updatedAt": "2026-10-18T15:08:00.000Z",
+      "updatedAt": "2026-10-18T17:40:00.000Z",
       "gaInstalledAt": "2026-10-18T15:08:00.000Z"
     }
   ]
