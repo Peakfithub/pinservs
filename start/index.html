@@ -163,6 +163,19 @@ body.viewmode iframe#preview{height:calc(100vh - 56px);height:calc(100dvh - 56px
 body.viewmode .viewbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:10;height:calc(56px + env(safe-area-inset-bottom,0px));padding:0 max(12px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(12px,env(safe-area-inset-left,0px));align-items:center;justify-content:space-between;gap:10px;background:var(--ink);color:var(--bg);font-size:.85rem}
 .viewbar a{color:inherit}
 .viewbar .btn{padding:8px 14px;font-size:.85rem;background:var(--accent);color:var(--accent-ink)}
+.cfchip{position:relative}
+.cfchip input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.cfchip span{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);border-radius:999px;padding:6px 12px;font-size:.88rem;cursor:pointer;background:var(--surface)}
+.cfchip input:checked+span{border-color:var(--accent);background:var(--accent-soft)}
+.cfchip input:checked+span::before{content:"✓";font-weight:700;color:var(--accent)}
+.cfchip input:disabled+span{cursor:default;opacity:.8}
+.cfchip input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+.cfchip button{border:0;background:none;padding:0 0 0 2px;font-size:1rem;line-height:1;cursor:pointer;color:var(--muted)}
+.cf-res{border-radius:10px;padding:10px 12px;font-size:.88rem;display:grid;gap:4px}
+.cf-res.ok{background:color-mix(in srgb,var(--ok) 12%,var(--surface));border:1px solid color-mix(in srgb,var(--ok) 40%,transparent)}
+.cf-res.bad{background:color-mix(in srgb,var(--bad) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--bad) 45%,transparent)}
+.cf-res.warn{background:var(--sunk);border:1px solid var(--line)}
+.cf-res b{color:var(--ink)}
 .gal-grid button{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(17,23,46,.75);color:#fff;font-size:15px;line-height:1;cursor:pointer}
 .custom-color input[type=color]{width:34px;height:30px;border:1.5px solid var(--line);border-radius:8px;padding:2px;background:var(--surface);cursor:pointer}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -192,7 +205,7 @@ body.viewmode .viewbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-ind
     <form id="brief" novalidate data-pane class="on" aria-label="Website details">
       <div id="paneForm" style="display:grid;gap:22px">
       <fieldset class="card">
-        <legend>Your business <span>STEP 1 OF 5</span></legend>
+        <legend>Your business <span>STEP 1 OF 6</span></legend>
         <div class="field"><label for="biz">Business name <span class="req">*</span></label><input type="text" id="biz" name="biz" maxlength="60" autocomplete="organization" placeholder="Main Street Bakery"></div>
         <div class="field"><span class="lbl" id="domLbl">Your website address (domain)</span>
           <div class="choices two-up" role="radiogroup" aria-labelledby="domLbl">
@@ -220,7 +233,7 @@ body.viewmode .viewbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-ind
       </fieldset>
 
       <fieldset class="card">
-        <legend>What you offer <span>STEP 2 OF 5</span></legend>
+        <legend>What you offer <span>STEP 2 OF 6</span></legend>
         <div class="field"><label for="services">Services or products</label><textarea id="services" name="services" maxlength="600" placeholder=""></textarea><span class="hint">One per line, up to 6. Add a short description after a dash, like “Wedding cakes - custom designs for your big day”.</span></div>
         <div class="field"><label for="cta">Main button on your site</label>
           <select id="cta" name="cta">
@@ -235,7 +248,7 @@ body.viewmode .viewbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-ind
       </fieldset>
 
       <fieldset class="card" id="photosStep">
-        <legend>Photos <span>STEP 3 OF 5</span></legend>
+        <legend>Photos <span>STEP 3 OF 6</span></legend>
         <p class="hint" style="margin-top:-6px">Optional, but photos make the biggest difference. Use your own pictures of your work, team, space or products. Phone photos are fine.</p>
         <div class="field"><span class="lbl">Cover photo</span>
           <div class="photo-slot" id="slot-cover" data-slot="cover">
@@ -259,7 +272,7 @@ body.viewmode .viewbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-ind
       </fieldset>
 
       <fieldset class="card">
-        <legend>How customers reach you <span>STEP 4 OF 5</span></legend>
+        <legend>How customers reach you <span>STEP 4 OF 6</span></legend>
         <div class="two">
           <div class="field"><label for="phone">Business phone</label><input type="tel" id="phone" name="phone" maxlength="30" autocomplete="tel" placeholder="(555) 123-4567"></div>
           <div class="field"><label for="bizEmail">Business email</label><input type="email" id="bizEmail" name="bizEmail" maxlength="80" placeholder="hello@yourbusiness.com"></div>
@@ -269,8 +282,43 @@ body.viewmode .viewbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-ind
         <div class="field"><label for="hours">Opening hours</label><textarea id="hours" name="hours" maxlength="300" style="min-height:64px" placeholder="Mon–Fri 8am–6pm&#10;Sat 9am–2pm"></textarea></div>
       </fieldset>
 
+      <fieldset class="card" id="formStep">
+        <legend>Contact form <span>STEP 5 OF 6</span></legend>
+        <label class="check" style="font-weight:600"><input type="checkbox" id="cfOn" checked> Add a contact form to my website</label>
+        <div id="cfBody" style="display:grid;gap:14px">
+          <div class="field"><span class="lbl" id="cfFieldsLbl">Questions on your form</span>
+            <div class="chips" id="cfFields" role="group" aria-labelledby="cfFieldsLbl"></div>
+          </div>
+          <div class="field"><label for="cfCustom">Add your own question <span class="hint">(up to 3)</span></label>
+            <div class="linkbox"><input type="text" id="cfCustom" maxlength="60" placeholder="e.g. How did you hear about us?"><button type="button" class="btn quiet sm" id="cfAdd">Add</button></div>
+            <span class="err" id="cfCustomErr" hidden></span>
+          </div>
+          <div class="field"><label for="cfButton">Button text</label><input type="text" id="cfButton" maxlength="30" placeholder="Send message"></div>
+          <div class="field"><span class="lbl" id="cfDestLbl">Where should messages go?</span>
+            <div class="choices two-up" role="radiogroup" aria-labelledby="cfDestLbl">
+              <label class="choice"><input type="radio" name="cfDest" value="email" checked><span><b>Email me</b><small>We connect it for you. Nothing technical.</small></span></label>
+              <label class="choice"><input type="radio" name="cfDest" value="provider"><span><b>My email provider</b><small>Mailchimp, Brevo, Formspree or Web3Forms</small></span></label>
+            </div>
+          </div>
+          <div class="field" id="cfEmailWrap"><label for="cfTo">Send messages to</label><input type="email" id="cfTo" maxlength="80" placeholder="you@yourbusiness.com"></div>
+          <div class="field" id="cfProvWrap" hidden>
+            <label for="cfCode">Paste your form's embed code or link</label>
+            <textarea id="cfCode" spellcheck="false" style="font-family:var(--f-mono);font-size:.82rem;min-height:110px" placeholder="&lt;form action=&quot;https://….list-manage.com/subscribe/post?u=…&amp;id=…&quot; …&gt;"></textarea>
+            <details class="hint"><summary style="cursor:pointer;font-weight:600">Where do I find this?</summary>
+              <ul style="margin:8px 0 0;padding-left:18px;display:grid;gap:4px">
+                <li><b>Mailchimp:</b> Audience → Signup forms → Embedded forms → copy the code.</li>
+                <li><b>Brevo:</b> Contacts → Forms → open your form → Share → copy the HTML code.</li>
+                <li><b>Formspree:</b> open your form and copy its endpoint, like https://formspree.io/f/abcdwxyz.</li>
+                <li><b>Web3Forms:</b> copy the HTML example that includes your access key.</li>
+              </ul></details>
+            <p class="hint"><b>Never paste an API key.</b> API keys are private passwords for your account. Anyone who views a website can read what's in it.</p>
+            <div id="cfResult" role="status"></div>
+          </div>
+        </div>
+      </fieldset>
+
       <fieldset class="card">
-        <legend>Look and feel <span>STEP 5 OF 5</span></legend>
+        <legend>Look and feel <span>STEP 6 OF 6</span></legend>
         <div class="field"><span class="lbl">Your logo <span class="hint">(optional)</span></span>
           <div class="logo-drop" id="logoDrop">
             <img id="logoThumb" alt="Your logo" hidden>
@@ -387,6 +435,7 @@ function read(){
   if(preset){ d.hex=preset.c; }
   else if(d.color.indexOf("logo")===0){ d.hex=LOGO.colors[+d.color.slice(4)]||COLORS[0].c; }
   else { d.color="custom"; d.hex=$("hex").value.toUpperCase(); }
+  d.cf=cfData();
   return d;
 }
 function cleanDomain(v){ return String(v||"").trim().toLowerCase().replace(/^https?:\/\//,"").replace(/^www\./,"").replace(/[\/?#].*$/,"").replace(/\s+/g,""); }
@@ -397,10 +446,12 @@ function write(d){
   var preset=document.querySelector('input[name=color][value="'+String(d.color).replace(/[^a-z]/g,"")+'"]');
   if(preset && d.color!=="custom"){ preset.checked=true; }
   else if(/^#[0-9a-f]{6}$/i.test(d.hex||"")){ $("hex").value=d.hex; $("hexLabel").textContent=d.hex.toUpperCase(); $("customRadio").checked=true; }
+  if(d.cf) cfLoad(d.cf);
 }
 function setPlaceholders(){
   var p=IND[$("industry").value]||IND.other, re=$("industry").value==="realestate";
   $("licenseField").hidden=!re;
+  if($("cfFields")) cfRenderChips();
   document.querySelector('label[for="file-about"]').textContent = re ? "Your professional headshot" : "You, your team or your storefront";
   document.querySelector('label[for="file-gallery"]').textContent = re ? "Your current listings or recently sold homes. Pick several at once." : "Show off your work, food, products or space. Pick several at once.";
   $("areaLbl").textContent = re ? "Office address or areas you serve" : "Address or service area";
@@ -474,6 +525,107 @@ $("logoRemove").addEventListener("click", function(){
 ["dragleave","drop"].forEach(function(ev){ $("logoDrop").addEventListener(ev,function(e){ e.preventDefault(); this.classList.remove("over"); }); });
 $("logoDrop").addEventListener("drop", function(e){ loadLogo(e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]); });
 $("hex").addEventListener("input", function(){ $("customRadio").checked=true; $("hexLabel").textContent=this.value.toUpperCase(); soon(); });
+
+/* ---------- contact form builder ---------- */
+var CF_LABELS={ name:"Name", email:"Email", phone:"Phone", message:"Message", buysell:"Buying, selling or both?", property:"Property address", service:"Service needed", when:"Preferred day and time", company:"Company" };
+var CF_IND={ realestate:["buysell","property"], home:["service"], beauty:["when"], fitness:["when"], pro:["company"] };
+var CF={ on:true, sel:{phone:true,message:true,buysell:true,property:true,service:true,when:true,company:true}, custom:[], button:"", dest:"email", to:"", prov:null, provState:null };
+function cfKeys(){ return ["phone","message"].concat(CF_IND[$("industry").value]||[]); }
+function cfRenderChips(){
+  var locked='<label class="cfchip"><input type="checkbox" checked disabled><span>Name</span></label><label class="cfchip"><input type="checkbox" checked disabled><span>Email</span></label>';
+  $("cfFields").innerHTML = locked + cfKeys().map(function(k){ return '<label class="cfchip"><input type="checkbox" data-cf="'+k+'"'+(CF.sel[k]!==false?" checked":"")+'><span>'+esc(CF_LABELS[k])+'</span></label>'; }).join("") +
+    CF.custom.map(function(c,i){ return '<span class="cfchip"><span style="border-color:var(--accent);background:var(--accent-soft)">'+esc(c)+' <button type="button" data-cfdel="'+i+'" aria-label="Remove question '+esc(c)+'">×</button></span></span>'; }).join("");
+}
+function cfUi(){
+  CF.on=$("cfOn").checked; $("cfBody").hidden=!CF.on;
+  CF.dest=(document.querySelector('input[name=cfDest]:checked')||{}).value||"email";
+  $("cfEmailWrap").hidden=CF.dest!=="email"; $("cfProvWrap").hidden=CF.dest!=="provider";
+  $("cfTo").placeholder=$("bizEmail").value.trim()||"you@yourbusiness.com";
+}
+$("cfFields").addEventListener("change", function(e){ var k=e.target.dataset&&e.target.dataset.cf; if(k){ CF.sel[k]=e.target.checked; soon(); } });
+$("cfFields").addEventListener("click", function(e){ var b=e.target.closest("[data-cfdel]"); if(!b) return; CF.custom.splice(+b.dataset.cfdel,1); cfRenderChips(); soon(); });
+function cfAddCustom(){
+  var v=$("cfCustom").value.trim(), err=$("cfCustomErr");
+  err.hidden=true; if(!v) return;
+  if(CF.custom.length>=3){ err.textContent="You can add up to 3 questions. Remove one to add another."; err.hidden=false; return; }
+  CF.custom.push(v); $("cfCustom").value=""; cfRenderChips(); soon();
+}
+$("cfAdd").addEventListener("click", cfAddCustom);
+$("cfCustom").addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); cfAddCustom(); } });
+$("cfOn").addEventListener("change", function(){ cfUi(); soon(); });
+document.querySelectorAll('input[name=cfDest]').forEach(function(r){ r.addEventListener("change", function(){ cfUi(); if(CF.dest==="provider" && !$("cfCode").value) $("cfCode").focus(); soon(); }); });
+
+/* Reads pasted embed code or a form link. Only public form addresses are kept; private API keys are refused. */
+function parseProvider(raw){
+  raw=String(raw||"").trim(); if(!raw) return null;
+  var secrets=[
+    [/xkeysib-[a-z0-9]{20,}/i,"Brevo API key"], [/xsmtpsib-[a-z0-9]{20,}/i,"Brevo SMTP key"],
+    [/\b[0-9a-f]{32}-us\d{1,2}\b/i,"Mailchimp API key"], [/\bmd-[A-Za-z0-9_-]{20,}/,"Mailchimp Transactional key"],
+    [/\bSG\.[\w-]{16,}\.[\w-]{16,}/,"SendGrid API key"], [/\bkey-[0-9a-f]{32}\b/i,"Mailgun API key"],
+    [/\bre_[A-Za-z0-9]{8,}_[A-Za-z0-9]{8,}/,"Resend API key"], [/\b(sk|rk)_(live|test)_[A-Za-z0-9]{10,}/,"secret key"],
+    [/\b(api[_-]?key|apikey|secret|password|token)\s*[:=]\s*["']?[A-Za-z0-9._-]{16,}/i,"private key"]
+  ];
+  for(var i=0;i<secrets.length;i++) if(secrets[i][0].test(raw)) return { state:"secret", kind:secrets[i][1] };
+  var action=null, fields=[], hidden={};
+  if(/<form[\s>]/i.test(raw)){
+    var doc=new DOMParser().parseFromString(raw,"text/html"), f=doc.querySelector("form");   // parsing only: nothing in the pasted code runs
+    action=f && f.getAttribute("action");
+    doc.querySelectorAll("form input[name], form textarea[name], form select[name]").forEach(function(el){
+      var n=el.getAttribute("name"), t=(el.getAttribute("type")||el.tagName).toLowerCase();
+      if(t==="submit"||t==="button") return;
+      if(t==="hidden") hidden[n]=String(el.getAttribute("value")||"").slice(0,200);
+      else if(n==="email_address_check") hidden[n]="";   // Brevo spam trap, kept empty
+      else if(fields.indexOf(n)<0 && !/^b_[0-9a-f]+_[0-9a-f]+$/.test(n)) fields.push(n);
+      else if(/^b_[0-9a-f]+_[0-9a-f]+$/.test(n)) hidden[n]="";   // Mailchimp spam trap, kept empty
+    });
+  } else {
+    var m=raw.match(/https?:\/\/[^\s"'<>]+/); action=m&&m[0];
+  }
+  if(!action) return { state:"bad", msg:"We couldn't find a form address in what you pasted. Paste the full embed code, or the form's link." };
+  var u; try{ u=new URL(action.replace(/&amp;/g,"&")); }catch(e){ return { state:"bad", msg:"That form address doesn't look right. Copy the code again from your provider." }; }
+  if(u.protocol!=="https:" && !/eepurl\.com$/.test(u.hostname)) return { state:"bad", msg:"The form address must start with https:// so messages are sent securely." };
+  var host=u.hostname.toLowerCase(), name=null, note="";
+  if(/(^|\.)list-manage\.com$/.test(host) && /\/subscribe\/post/.test(u.pathname)) name="Mailchimp signup form";
+  else if(/(^|\.)eepurl\.com$/.test(host)){ name="Mailchimp hosted form"; note="This is a link to a form page. For a form built into your site, paste the embedded form code instead."; }
+  else if(/(^|\.)sibforms\.com$/.test(host) && /\/serve\//.test(u.pathname)) name="Brevo form";
+  else if(host==="formspree.io" && /^\/f\/[A-Za-z0-9]+/.test(u.pathname)) name="Formspree";
+  else if(host==="api.web3forms.com"){ name="Web3Forms"; if(!hidden.access_key) return { state:"bad", msg:"This Web3Forms code is missing its access key. Copy the full HTML example from Web3Forms." }; }
+  else { name="Form service at "+host; note="We don't recognize this service yet. We'll test it with you before your site goes live."; }
+  if(/Mailchimp|Brevo/.test(name) && CF.sel.message!==false && !fields.some(function(f){ return /mess|comment|note/i.test(f); }))
+    note=(note?note+" ":"")+name.split(" ")[0]+" forms collect sign-ups. To receive messages too, add a text field called MESSAGE to your form, or choose Email me.";
+  return { state:"ok", name:name, action:u.href, fields:fields.slice(0,20), hidden:hidden, note:note };
+}
+function cfShowResult(){
+  var r=CF.provState, el=$("cfResult");
+  if(!r){ el.innerHTML=""; $("cfCode").removeAttribute("aria-invalid"); return; }
+  $("cfCode").setAttribute("aria-invalid", r.state==="ok"?"false":"true");
+  if(r.state==="secret") el.innerHTML='<div class="cf-res bad"><b>That looks like a '+esc(r.kind)+'. We didn\'t save it.</b><span>An API key is a private password for your account. If it\'s put on a website, anyone can read it and use your account to send email or download your contacts. Delete it from this box. If you already shared it anywhere, create a new key in your provider\'s settings.</span><span>Paste your form\'s <b>embed code</b> instead, or choose <b>Email me</b>.</span></div>';
+  else if(r.state==="bad") el.innerHTML='<div class="cf-res bad"><b>'+esc(r.msg)+'</b></div>';
+  else el.innerHTML='<div class="cf-res '+(r.note?"warn":"ok")+'"><b>Connected: '+esc(r.name)+'</b>'+(r.fields.length?'<span>Fields found: '+r.fields.map(esc).join(", ")+'</span>':'')+(r.note?'<span>'+esc(r.note)+'</span>':'')+'</div>';
+}
+var cfT;
+$("cfCode").addEventListener("input", function(){ clearTimeout(cfT); var v=this.value; cfT=setTimeout(function(){
+  CF.provState=parseProvider(v); CF.prov=(CF.provState&&CF.provState.state==="ok")?CF.provState:null;
+  if(CF.provState && CF.provState.state==="secret") $("cfCode").value="";   // never keep a key, not even in this box
+  cfShowResult(); soon();
+},250); });
+function cfData(){
+  if(!CF.on) return { on:false };
+  return { on:true, fields:["name","email"].concat(cfKeys().filter(function(k){ return CF.sel[k]!==false; })), custom:CF.custom.slice(0,3),
+    button:$("cfButton").value.trim(), dest:CF.dest, to:$("cfTo").value.trim(),
+    prov: CF.dest==="provider"&&CF.prov ? { name:CF.prov.name, action:CF.prov.action, fields:CF.prov.fields, hidden:CF.prov.hidden, note:CF.prov.note } : null };
+}
+function cfLoad(c){
+  if(!c || typeof c!=="object") return;
+  $("cfOn").checked = c.on!==false;
+  if(Array.isArray(c.fields)) Object.keys(CF.sel).forEach(function(k){ CF.sel[k]=c.fields.indexOf(k)>=0; });
+  if(Array.isArray(c.custom)) CF.custom=c.custom.map(String).filter(Boolean).slice(0,3).map(function(x){ return x.slice(0,60); });
+  if(c.button) $("cfButton").value=String(c.button).slice(0,30);
+  if(c.to) $("cfTo").value=String(c.to).slice(0,80);
+  var r=document.querySelector('input[name=cfDest][value="'+(c.dest==="provider"?"provider":"email")+'"]'); if(r) r.checked=true;
+  if(c.prov && c.prov.action){ var again=parseProvider('<form action="'+String(c.prov.action).replace(/"/g,"&quot;")+'"></form>'); if(again && again.state==="ok"){ CF.prov={ name:again.name, action:again.action, fields:Array.isArray(c.prov.fields)?c.prov.fields.slice(0,20):[], hidden:(c.prov.hidden&&typeof c.prov.hidden==="object")?c.prov.hidden:{}, note:c.prov.note||"" }; CF.provState=CF.prov; $("cfCode").placeholder="Connected from your saved preview. Paste new code here to change it."; } }
+  cfRenderChips(); cfUi(); cfShowResult();
+}
 
 /* ---------- photos: shrink each one in the browser, keep them for this visit ---------- */
 var PHOTOS={ cover:null, about:null, gallery:[] };
@@ -598,6 +750,20 @@ function build(d){
   var logo = /^data:image\/png;base64,[A-Za-z0-9+\/=]+$/.test(d.logo||"") ? d.logo : "";
   var okImg = function(u){ return /^data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/.test(u||"") ? u : ""; };
   var isRE = d.industry==="realestate";
+  var cf = d.cf||{on:true,fields:["name","email","phone","message"],custom:[]};
+  var cfIn = function(k){ return (cf.fields||[]).indexOf(k)>=0; };
+  var cformHtml = cf.on===false ? "" : '<form class="cform" aria-label="Contact form"><h3>'+(isRE?"Let's talk about your move":"Send us a message")+'</h3>'+
+    '<label>Name<input type="text" autocomplete="off"></label><label>Email<input type="email" autocomplete="off"></label>'+
+    (cfIn("phone")?'<label>Phone<input type="tel" autocomplete="off"></label>':'')+
+    (cfIn("buysell")?'<label>Buying, selling or both?<select><option>Buying</option><option>Selling</option><option>Both</option></select></label>':'')+
+    (cfIn("property")?'<label class="full"><span>Property address <span style="font-weight:400;color:var(--mut)">(if selling)</span></span><input type="text" autocomplete="off"></label>':'')+
+    (cfIn("service")?'<label>Service needed<input type="text" autocomplete="off"></label>':'')+
+    (cfIn("when")?'<label>Preferred day and time<input type="text" autocomplete="off"></label>':'')+
+    (cfIn("company")?'<label>Company<input type="text" autocomplete="off"></label>':'')+
+    (cf.custom||[]).map(function(q){ return '<label class="full">'+esc(q)+'<input type="text" autocomplete="off"></label>'; }).join("")+
+    (cfIn("message")?'<label class="full">Message<textarea></textarea></label>':'')+
+    '<button class="btn" type="button">'+esc(cf.button||(isRE?"Get in touch":"Send message"))+'</button>'+
+    '<p class="fnote">Preview: this form starts working when your site goes live'+(cf.dest==="provider"&&cf.prov?', connected to '+esc(cf.prov.name):'')+'.</p></form>';
   var P = d.photos||{}, cover=okImg(P.cover), aboutImg=okImg(P.about), gal=(P.gallery||[]).map(okImg).filter(Boolean).slice(0,8);
   var cta=CTA[d.cta]||CTA[p.cta];
   var tel=(d.phone||"").replace(/[^\d+]/g,"");
@@ -652,6 +818,13 @@ function build(d){
   '.cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:28px}'+
   '.cgrid h3{font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--c);margin-bottom:8px;font-family:'+fb+'}'+
   '.cgrid p{margin:0}.cgrid a{color:inherit}'+
+  '.cform{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:36px;max-width:720px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:24px}'+
+  '.cform h3{grid-column:1/-1;font-size:1.3rem;margin:0;color:var(--fg);letter-spacing:0;text-transform:none;font-family:'+fh+'}'+
+  '.cform label{display:grid;gap:6px;font-size:.9rem;font-weight:600;color:var(--fg)}.cform .full{grid-column:1/-1}'+
+  '.cform input,.cform select,.cform textarea{font:inherit;font-weight:400;color:var(--fg);background:var(--card);border:1.5px solid var(--line);border-radius:'+(st==="modern"?"10px":rad)+';padding:11px 12px;width:100%;box-sizing:border-box}'+
+  '.cform textarea{min-height:110px;resize:vertical}.cform .btn{justify-self:start;border:0;cursor:pointer;font:inherit;font-weight:700}'+
+  '.fnote{grid-column:1/-1;margin:0;font-size:.8rem;color:var(--mut)}'+
+  '@media(max-width:720px){.cform{grid-template-columns:1fr}}'+
   'footer{padding:28px 0;color:var(--mut);font-size:.88rem;border-top:1px solid var(--line)}'+
   '.lic{margin:0 0 10px;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;color:var(--fg)}.eho{display:inline-flex;align-items:center;gap:6px;font-weight:600}'+
   '@media(max-width:720px){.links{display:none}.about{grid-template-columns:1fr}section{padding:52px 0}.hero{padding:48px 0 56px}}'+
@@ -673,7 +846,7 @@ function build(d){
   '<div><h3>Email</h3><p'+(d.bizEmail?"":' class="ph"')+'>'+esc(d.bizEmail||"hello@yourbusiness.com")+'</p></div>'+
   '<div><h3>'+(isRE?"Office":"Find us")+'</h3><p'+(d.area?"":' class="ph"')+'>'+esc(d.area||"Your address or service area")+'</p></div>'+
   '<div><h3>Hours</h3><p'+(hours.length?"":' class="ph"')+'>'+(hours.length?hours.map(esc).join("<br>"):"Mon–Fri 9am–5pm")+'</p></div>'+
-  '</div><p style="margin-top:32px"><a class="btn" href="'+esc(ctaHref)+'">'+esc(cta)+'</a></p></div></section>'+
+  '</div>'+(cf.on===false ? '<p style="margin-top:32px"><a class="btn" href="'+esc(ctaHref)+'">'+esc(cta)+'</a></p>' : cformHtml)+'</div></section>'+
   '<footer><div class="w">'+(isRE?'<p class="lic"><span'+(d.license?'':' class="ph"')+'>'+esc(d.license||"Your Brokerage · License #0000000")+'</span><span class="eho"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 2 1 11h3v11h16V11h3L12 2zm-5 11h10v2H7v-2zm0 4h10v2H7v-2z"/></svg>Equal Housing Opportunity</span></p>':'')+'© 2026 '+esc(name.t)+(d.domain?' · '+esc(d.domain):'')+' · Website by Pinservs</div></footer>'+
   '</body></html>';
 }
@@ -738,6 +911,8 @@ $("brief").addEventListener("submit", function(e){
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)){ msgs.push("Add an email address we can reply to."); ids.push("email"); }
   if(d.bizEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.bizEmail)){ msgs.push("Check the business email address."); ids.push("bizEmail"); }
   if(d.domain && !validDomain(d.domain)){ msgs.push("Check the domain, like yourbusiness.com."); ids.push("domain"); }
+  if(d.cf.on && d.cf.dest==="email" && d.cf.to && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.cf.to)){ msgs.push("Check the email address for form messages."); ids.push("cfTo"); }
+  if(d.cf.on && d.cf.dest==="provider" && !d.cf.prov){ msgs.push(CF.provState&&CF.provState.state==="secret" ? "Paste your form's embed code, not an API key, or choose Email me." : "Paste your form's embed code or link, or choose Email me for form messages."); ids.push("cfCode"); }
   if(msgs.length){ fail(msgs, ids); return; }
   FIELDS.forEach(function(f){ $(f).removeAttribute("aria-invalid"); }); $("formErr").hidden=true;
   shareLinks(d).then(function(L){ sendRequest(d, L); });
@@ -748,6 +923,8 @@ function sendRequest(d, L){
   var body=[
     "Hi Pinservs,","","I'd like a website. Here's my preview:", url, "",
     "Business: "+d.biz, "Type: "+ind, d.industry==="realestate"&&d.license ? "Brokerage and license: "+d.license : "",
+    !d.cf.on ? "Contact form: no thanks" : "Contact form: "+d.cf.fields.map(function(k){ return CF_LABELS[k]; }).concat(d.cf.custom).join(", ")+
+      (d.cf.dest==="provider"&&d.cf.prov ? "\n  Messages go to my "+d.cf.prov.name+": "+d.cf.prov.action : "\n  Messages go to: "+(d.cf.to||d.bizEmail||d.email)),
     d.domainStatus==="need" ? ("Domain: I need one"+(d.domain?" (I'd like "+d.domain+")":"")) : ("Domain: I already own "+(d.domain||"(not entered yet)")),
     "Style: "+d.style+", brand color: "+d.hex+(d.color.indexOf("logo")===0?" (matched from my logo)":""),
     LOGO.data ? "Logo: I uploaded it in the preview. I'll attach the original file to this email." : "",
@@ -790,6 +967,7 @@ if(link&&link.view){
   document.title=(start.biz||"Your website")+" · Preview by Pinservs";
 }
 if(!start){ try{ start=JSON.parse(sessionStorage.getItem("pinservs_brief")||"null"); }catch(e){} }
+cfRenderChips(); cfUi();
 if(start) write(start);
 else if(qInd && IND[qInd]){ $("industry").value=qInd; $("cta").value=IND[qInd].cta; }
 try{ var savedPh=JSON.parse(sessionStorage.getItem("pinservs_photos")||"null"); if(savedPh){ PHOTOS={cover:savedPh.cover||null, about:savedPh.about||null, gallery:(savedPh.gallery||[]).slice(0,8)}; showPhotos(); } }catch(e){}
