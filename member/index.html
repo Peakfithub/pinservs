@@ -5,19 +5,19 @@
 <style>
 /* Layout: a showroom lot. Each site is a numbered listing: browser-framed screenshot on one side, a tabbed spec sheet (Overview / For sale) on the other, with a hanging price tag. */
 :root{
-  --bg:#eef1f4; --surface:#ffffff; --ink:#142030; --muted:#566273; --line:#d6dce3;
-  --tag:#f2a900; --tag-ink:#1d1500; --accent:#1d5fd1; --chrome:#dfe4ea; --ok:#1d7a4c;
+  --bg:#F5F6FA; --surface:#FFFFFF; --ink:#11172E; --muted:#59617A; --line:#DDE1EC;
+  --tag:#C9381F; --tag-ink:#FFFFFF; --accent:#2743E6; --accent-soft:#E6EAFD; --pin:#E5462F; --chrome:#E4E7F0; --ok:#1F7A4D;
   --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
   --f-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
   --r:10px;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0f151d; --surface:#17202b; --ink:#e7edf4; --muted:#9aa7b6; --line:#2a3644;
-  --tag:#f5b82a; --tag-ink:#1d1500; --accent:#7aa8ff; --chrome:#222d3a; --ok:#5fd39a; color-scheme:dark}}
+  --bg:#0C1022; --surface:#151B33; --ink:#EEF0F8; --muted:#9AA2BE; --line:#272F4D;
+  --tag:#FF6B55; --tag-ink:#0C1022; --accent:#7D92FF; --accent-soft:#1D2550; --pin:#FF6B55; --chrome:#1E2647; --ok:#5FD39A; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0f151d; --surface:#17202b; --ink:#e7edf4; --muted:#9aa7b6; --line:#2a3644;
-  --tag:#f5b82a; --tag-ink:#1d1500; --accent:#7aa8ff; --chrome:#222d3a; --ok:#5fd39a; color-scheme:dark}
+  --bg:#0C1022; --surface:#151B33; --ink:#EEF0F8; --muted:#9AA2BE; --line:#272F4D;
+  --tag:#FF6B55; --tag-ink:#0C1022; --accent:#7D92FF; --accent-soft:#1D2550; --pin:#FF6B55; --chrome:#1E2647; --ok:#5FD39A; color-scheme:dark}
 
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -37,6 +37,7 @@ header.top .wrap{display:flex;align-items:center;justify-content:space-between;g
 .brand .pd-mark{width:30px;height:30px;flex:none}
 .brand .pd-hole{fill:var(--bg)}
 .brand .pd-pixel{fill:var(--accent)}
+.brand .pd-pin{fill:var(--pin)}
 .brand .pd-sub{font-family:var(--f-mono);font-weight:600;font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-left:2px}
 
 .jump{display:flex;gap:2px;flex-wrap:nowrap}
@@ -63,7 +64,7 @@ header.top .wrap{display:flex;align-items:center;justify-content:space-between;g
 /* Intro */
 .intro{padding-block:64px 40px;display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:end}
 .intro h1{font-size:clamp(2.6rem,6.5vw,4.8rem);font-weight:800;letter-spacing:-.02em}
-.intro h1 span{background:linear-gradient(transparent 62%,var(--tag) 62% 92%,transparent 92%)}
+.intro h1 span{background:linear-gradient(transparent 60%,var(--accent-soft) 60% 94%,transparent 94%);color:var(--accent)}
 .intro .lede{font-size:1.15rem;color:var(--muted);max-width:52ch;margin-top:18px}
 .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
 .facts div{padding:18px;display:grid;gap:2px;min-width:0}
@@ -120,7 +121,7 @@ input{font:inherit;font-weight:400;width:100%;padding:10px 12px;border:1.5px sol
 .money{position:relative}
 .money span{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-family:var(--f-mono)}
 .money input{padding-left:26px;font-family:var(--f-mono)}
-.btn{font:inherit;font-weight:700;border:0;border-radius:8px;padding:12px 18px;background:var(--ink);color:var(--bg);cursor:pointer;min-height:44px;justify-self:start}
+.btn{font:inherit;font-weight:700;border:0;border-radius:999px;padding:12px 18px;background:var(--ink);color:var(--bg);cursor:pointer;min-height:44px;justify-self:start}
 .btn:hover{opacity:.9}
 .msg{font-size:.88rem}
 .msg.err{color:#c0362c}
@@ -156,13 +157,15 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:8px}
 .ownerhint{font-size:.82rem;color:var(--muted)}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 html{scroll-behavior:smooth}
-.buynow{text-decoration:none;display:inline-flex;align-items:center;justify-self:start;background:var(--tag);color:var(--tag-ink)}
+.buynow{text-decoration:none;display:inline-flex;align-items:center;justify-self:start;background:var(--accent);color:#fff;border-radius:999px;padding-inline:22px}
+:root[data-theme="dark"] .buynow{color:#0C1022}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .buynow{color:#0C1022}}
 .buynow[aria-disabled="true"]{opacity:.55;pointer-events:none}
 </style>
 
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="#top" aria-label="Pinservs Digital, websites for sale"><svg class="pd-mark" viewBox="0 0 64 64" aria-hidden="true"><rect x="12" y="6" width="11" height="52" rx="2.5" fill="currentColor"></rect><circle cx="33" cy="23" r="16" fill="#E5462F"></circle><circle class="pd-hole" cx="33" cy="23" r="6"></circle><rect class="pd-pixel" x="44" y="46" width="10" height="10" rx="2.5"></rect></svg><span>Pinservs</span><span class="pd-sub">Digital</span></a>
+    <a class="brand" href="#top" aria-label="Pinservs Digital, websites for sale"><svg class="pd-mark" viewBox="0 0 64 64" aria-hidden="true"><rect x="12" y="6" width="11" height="52" rx="2.5" fill="currentColor"></rect><circle class="pd-pin" cx="33" cy="23" r="16" fill="#E5462F"></circle><circle class="pd-hole" cx="33" cy="23" r="6"></circle><rect class="pd-pixel" x="44" y="46" width="10" height="10" rx="2.5"></rect></svg><span>Pinservs</span><span class="pd-sub">Digital</span></a>
     <nav class="topnav" aria-label="Main">
       <div class="jump" id="jump"></div>
       <a class="acct" id="acct-link" href="#">Member sign in</a>
