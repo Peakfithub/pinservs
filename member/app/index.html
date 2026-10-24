@@ -59,12 +59,11 @@ input[type=email],input[type=password],input[type=text],select{font:inherit;font
 .pv a{color:#eef1f4;text-decoration:none;padding:4px 10px;border:1px solid #3a4a5e;border-radius:999px}
 .pv a[aria-current]{background:#f5b82a;color:#1d1500;border-color:#f5b82a}
 .pvtoast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#142030;color:#eef1f4;padding:12px 16px;border-radius:10px;font:500 .9rem Figtree,system-ui,sans-serif;max-width:min(92vw,520px);box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:99}
-</style></head><body><div class="pv" role="note"><div class="in"><span><b>Preview</b> with sample data. Sign-in, payments and uploads work once the store app is deployed.</span><nav aria-label="Preview pages"><a href="/member/">Shop</a><a href="/member/welcome/">After purchase</a><a href="/member/login/">Member sign in</a><a href="/member/downloads/">My downloads</a><a href="/member/admin/">Admin sign in</a><a href="/member/admin/dashboard/">Admin dashboard</a></nav></div></div><header class="top"><div class="in"><a class="brand" href="/member/"><i aria-hidden="true"></i>Turnkey Site Shop</a><nav class="links" aria-label="Preview"><a href="/member/admin/dashboard/">Admin dashboard</a></nav></div></header><main class="col"><div class="card">
+</style></head><body><header class="top"><div class="in"><a class="brand" href="/member/"><i aria-hidden="true"></i>Turnkey Site Shop</a><nav class="links" aria-label="Main"><div class="inline"><a href="/member/">Shop</a><a href="/member/admin/">Admin</a></div></nav></div></header><main class="col"><div class="card">
 <p class="eyebrow">Store app</p><h1>Turnkey Store app files</h1>
-<p>These are the files that run the live store: Stripe checkout, member accounts, private PDF and ZIP downloads, and the admin dashboard. pinservs.com can only show the preview pages, because sign-in, payments and uploads need a server. Deploy these files to Cloudflare (free tier) to make it all work.</p>
+<p>These files run the live store: Stripe checkout, member accounts, private PDF and ZIP downloads, and the admin dashboard. They deploy to Cloudflare Workers (free plan) with the <b>Deploy Turnkey Store</b> action in the pinservs GitHub repo.</p>
 <p><a class="btn" href="/member/app/turnkey-store.zip">Download the app (.zip)</a></p>
 <ul class="small">
-<li>Step-by-step setup is in README.md inside the zip (about 20 minutes).</li>
-<li>Before deploying, set <code>ADMIN_EMAIL</code> in <code>wrangler.toml</code> to your own email.</li>
-<li>Passwords and Stripe keys are never stored in these files. You add them as Cloudflare secrets.</li>
+<li>Setup takes about 15 minutes. The steps are in README.md: a Cloudflare account, a Stripe key, five GitHub secrets, then Run workflow.</li>
+<li>Keys and passwords live only in GitHub and Cloudflare secrets, never in these files.</li>
 </ul></div></main></body></html>

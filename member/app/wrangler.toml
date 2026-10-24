@@ -1,12 +1,11 @@
 name = "turnkey-store"
 main = "src/index.js"
 compatibility_date = "2025-06-01"
+workers_dev = true
 
 [vars]
-# Where buyers go if they cancel checkout, and where the logo links (your Turnkey Site Shop page)
-SHOP_URL = "https://claude.ai/artifact/88nnAgs9TavtE1n5hXJXfj"
-# Your admin sign-in email for /admin/login (the password is the ADMIN_PASSWORD secret)
-ADMIN_EMAIL = "you@example.com"   # change to your own email before deploying
+# Your shop page: buyers return here if they cancel checkout, and the logo links here
+SHOP_URL = "https://pinservs.com/member/"
 # How many days after paying a buyer can use their purchase link to create a password
 SUCCESS_WINDOW_DAYS = "7"
 
@@ -15,13 +14,15 @@ SUCCESS_WINDOW_DAYS = "7"
 binding = "FILES"
 bucket_name = "turnkey-site-files"
 
-# Members, orders and sign-in limits
+# Members, orders and sign-in limits. The deploy action fills in the id.
 [[kv_namespaces]]
 binding = "DATA"
 id = "PASTE_YOUR_KV_NAMESPACE_ID_HERE"
 
-# Secrets (set with `npx wrangler secret put NAME`, never written in this file):
-#   STRIPE_SECRET_KEY       your Stripe secret key (sk_test_... or sk_live_...)
-#   STRIPE_WEBHOOK_SECRET   signing secret of your Stripe webhook (whsec_...)
-#   SIGNING_SECRET          any long random text, used to sign sessions and access links
+# Secrets: added by the GitHub deploy action from your repository secrets
+# (or by hand with `npx wrangler secret put NAME`). Never written in this file.
+#   ADMIN_EMAIL             your admin sign-in email
 #   ADMIN_PASSWORD          your admin sign-in password (12+ characters)
+#   STRIPE_SECRET_KEY       your Stripe secret key (sk_test_... or sk_live_...)
+#   STRIPE_WEBHOOK_SECRET   optional: signing secret of your Stripe webhook (whsec_...)
+#   SIGNING_SECRET          created automatically on the first deploy

@@ -1,12 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Turnkey Site Shop</title><meta name="robots" content="noindex"><style>
-.pv{background:#142030;color:#eef1f4;font:500 .85rem/1.4 Figtree,system-ui,sans-serif;padding:10px 16px}
-.pv .in{max-width:1080px;margin:0 auto;display:flex;gap:10px 18px;align-items:center;flex-wrap:wrap}
-.pv b{color:#f5b82a;font-weight:700}
-.pv nav{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
-.pv a{color:#eef1f4;text-decoration:none;padding:4px 10px;border:1px solid #3a4a5e;border-radius:999px}
-.pv a[aria-current]{background:#f5b82a;color:#1d1500;border-color:#f5b82a}
-.pvtoast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#142030;color:#eef1f4;padding:12px 16px;border-radius:10px;font:500 .9rem Figtree,system-ui,sans-serif;max-width:min(92vw,520px);box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:99}
-</style></head><body><div class="pv" role="note"><div class="in"><span><b>Preview</b> with sample data. Sign-in, payments and uploads work once the store app is deployed.</span><nav aria-label="Preview pages"><a href="/member/" aria-current="page">Shop</a><a href="/member/welcome/">After purchase</a><a href="/member/login/">Member sign in</a><a href="/member/downloads/">My downloads</a><a href="/member/admin/">Admin sign in</a><a href="/member/admin/dashboard/">Admin dashboard</a></nav></div></div>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Turnkey Site Shop</title><meta name="description" content="Pre-built websites for sale, ready to open for business."><script src="/member/store-config.js"></script></head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -40,12 +32,29 @@ a{color:var(--accent)}
 
 /* Header */
 header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
-header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px;flex-wrap:wrap}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px}
 .brand{font-family:var(--f-display);font-weight:800;font-size:1.25rem;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:10px}
 .brand .dot{width:14px;height:14px;border-radius:3px;background:var(--tag);transform:rotate(45deg)}
 .jump{display:flex;gap:6px;flex-wrap:wrap}
 .jump a{font-size:.88rem;text-decoration:none;color:var(--muted);padding:6px 10px;border-radius:999px}
 .jump a:hover{color:var(--ink);background:var(--surface)}
+.topnav{display:flex;align-items:center;gap:8px}
+.acct{font-size:.88rem;font-weight:600;text-decoration:none;color:var(--ink);border:1.5px solid var(--line);border-radius:999px;padding:6px 14px;white-space:nowrap}
+.acct:hover{border-color:var(--ink)}
+.burger{display:none;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.burger svg{width:22px;height:22px}
+.burger .x{display:none}
+.burger[aria-expanded="true"] .bars{display:none}
+.burger[aria-expanded="true"] .x{display:block}
+.menu{border-top:1px solid var(--line);background:var(--bg);padding:12px 16px 18px;display:grid;gap:4px;max-height:calc(100vh - 80px);overflow-y:auto}
+.menu-h{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:6px 4px}
+.menu-sites{display:grid;gap:2px}
+.menu a{display:flex;align-items:center;min-height:48px;padding:0 12px;border-radius:8px;text-decoration:none;color:var(--ink);font-size:1.05rem;font-weight:500}
+.menu a:hover{background:var(--surface)}
+.menu .menu-acct{margin-top:8px;justify-content:center;font-weight:700;background:var(--ink);color:var(--bg)}
+@media (max-width:1020px){.jump{display:none}.burger{display:inline-flex}}
+@media (max-width:420px){.acct{display:none}}
+@media (min-width:1021px){.menu{display:none!important}}
 
 /* Intro */
 .intro{padding-block:64px 40px;display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:end}
@@ -127,7 +136,6 @@ footer{border-top:1px solid var(--line);padding-block:28px;color:var(--muted);fo
   .wrap{padding-inline:16px}
   .cols,.row2{grid-template-columns:1fr}
   .facts b{font-size:1.5rem}
-  .jump{display:none}
 }
 .tabs{overflow-x:auto}
 .tabs button{white-space:nowrap}
@@ -145,12 +153,25 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:8px}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 html{scroll-behavior:smooth}
 .buynow{text-decoration:none;display:inline-flex;align-items:center;justify-self:start;background:var(--tag);color:var(--tag-ink)}
+.buynow[aria-disabled="true"]{opacity:.55;pointer-events:none}
 </style>
 
 <header class="top">
   <div class="wrap">
     <a class="brand" href="#top"><span class="dot" aria-hidden="true"></span>Turnkey Site Shop</a>
-    <nav class="jump" aria-label="Listings" id="jump"></nav>
+    <nav class="topnav" aria-label="Main">
+      <div class="jump" id="jump"></div>
+      <a class="acct" id="acct-link" href="#">Member sign in</a>
+      <button type="button" class="burger" id="burger" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+        <svg class="bars" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </nav>
+  </div>
+  <div class="menu" id="menu" hidden>
+    <p class="menu-h">Websites for sale</p>
+    <div class="menu-sites" id="menu-sites"></div>
+    <a class="menu-acct" id="menu-acct" href="#">Member sign in</a>
   </div>
 </header>
 
@@ -290,6 +311,7 @@ document.getElementById("count").textContent = SITES.length;
 SITES.forEach((s, i) => {
   const n = String(i + 1).padStart(2, "0");
   jump.insertAdjacentHTML("beforeend", `<a href="#${s.id}">${esc(s.name)}</a>`);
+  document.getElementById("menu-sites").insertAdjacentHTML("beforeend", `<a href="#${s.id}">${esc(s.name)}</a>`);
   listings.insertAdjacentHTML("beforeend", `
   <article class="listing" id="${s.id}" aria-labelledby="${s.id}-h">
     <div class="shot">
@@ -322,7 +344,7 @@ SITES.forEach((s, i) => {
             <p class="big"><small>Starting price</small>$100</p>
             <p class="terms">Offers start at $100. Higher offers are welcome and reviewed first.</p>
           </div>
-          <a class="btn buynow" href="/member/welcome/">Buy now · $100</a>
+          <a class="btn buynow" data-buy="${s.id}" href="#" aria-disabled="true">Checkout opening soon</a>
           <div>
             <h3>What you get</h3>
             <ul class="pts ben">
@@ -465,5 +487,25 @@ listings.addEventListener("click", e => {
   const fallback = () => { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Selected, press copy"; };
   try { navigator.clipboard.writeText(el.textContent).then(done, fallback); } catch { fallback(); }
 });
+
+// Live store links (the deploy writes TURNKEY_STORE_URL into /member/store-config.js)
+const STORE = String(window.TURNKEY_STORE_URL || "").replace(/\/+$/, "");
+if (STORE) {
+  document.querySelectorAll("[data-buy]").forEach(a => {
+    a.href = STORE + "/buy/" + encodeURIComponent(a.dataset.buy);
+    a.removeAttribute("aria-disabled");
+    a.textContent = "Buy now · $100";
+  });
+  ["acct-link", "menu-acct"].forEach(id => { document.getElementById(id).href = STORE + "/members"; });
+} else {
+  ["acct-link", "menu-acct"].forEach(id => { const a = document.getElementById(id); a.href = "#"; a.title = "Member sign-in opens when the store goes live"; });
+}
+
+// Mobile menu
+const burger = document.getElementById("burger"), menu = document.getElementById("menu");
+function setMenu(open){ burger.setAttribute("aria-expanded", open); burger.setAttribute("aria-label", open ? "Close menu" : "Open menu"); menu.hidden = !open; }
+burger.addEventListener("click", () => setMenu(menu.hidden));
+menu.addEventListener("click", e => { if (e.target.closest("a")) setMenu(false); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !menu.hidden) { setMenu(false); burger.focus(); } });
 </script>
 </body></html>

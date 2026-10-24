@@ -29,13 +29,26 @@ p{margin:0}
 .eyebrow{font:600 .74rem var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .small{font-size:.9rem;color:var(--muted)}
 header.top{border-bottom:1px solid var(--line);background:var(--bg)}
-header.top .in{max-width:1080px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+header.top{position:relative;z-index:20}
+header.top .in{max-width:1080px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .brand{font:800 1.2rem var(--f-display);color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px}
 .brand i{width:13px;height:13px;border-radius:3px;background:var(--tag);transform:rotate(45deg)}
 nav.links{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 nav.links a,nav.links button{font:500 .92rem var(--f-body);color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:999px;background:none;border:0;cursor:pointer;min-height:40px}
 nav.links a:hover,nav.links button:hover{color:var(--ink);background:var(--surface)}
 nav.links form{margin:0;display:flex}
+nav.links .inline{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.burger{display:none;position:relative}
+.burger summary{list-style:none;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.burger summary::-webkit-details-marker{display:none}
+.burger summary svg{width:22px;height:22px}
+.burger .x{display:none}
+.burger[open] .bars{display:none}
+.burger[open] .x{display:block}
+.burger .panel{position:absolute;right:0;top:calc(100% + 8px);z-index:30;min-width:220px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px;display:grid;gap:2px;box-shadow:0 16px 40px -12px rgba(10,20,35,.35)}
+.burger .panel a,.burger .panel button{display:flex;width:100%;text-align:left;border-radius:8px;padding:12px 14px;min-height:44px;color:var(--ink);font-size:1rem}
+.burger .panel form{display:block}
+@media (max-width:640px){nav.links .inline{display:none}.burger{display:block}}
 main.col{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:48px 72px;display:grid;gap:24px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:24px;display:grid;gap:16px;min-width:0}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--tag);color:var(--tag-ink);font:700 1rem var(--f-body);text-decoration:none;border:0;border-radius:8px;padding:12px 18px;cursor:pointer;min-height:44px}
@@ -69,9 +82,10 @@ const SEC_HEADERS = {
 
 export function html(title, body, { status = 200, member = null, env, headers = {}, script = false, extraCss = "", navHtml = null } = {}) {
   const shop = env?.SHOP_URL || "/";
-  const nav = navHtml != null ? navHtml : member
+  const items = navHtml != null ? navHtml : `<a href="${esc(shop)}">Shop</a>` + (member
     ? `<a href="/members">My downloads</a><form method="post" action="/logout"><button type="submit">Sign out</button></form>`
-    : `<a href="/login">Member sign in</a>`;
+    : `<a href="/login">Member sign in</a>`);
+  const nav = `<div class="inline">${items}</div><details class="burger"><summary aria-label="Menu"><svg class="bars" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></summary><div class="panel">${items}</div></details>`;
   const doc = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)}</title><meta name="robots" content="noindex">${FONTS}<style>${CSS}${extraCss}</style></head><body>
 <header class="top"><div class="in"><a class="brand" href="${esc(shop)}"><i aria-hidden="true"></i>Turnkey Site Shop</a><nav class="links" aria-label="Account">${nav}</nav></div></header>
