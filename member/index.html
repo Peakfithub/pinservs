@@ -1,0 +1,469 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Turnkey Site Shop</title><meta name="robots" content="noindex"><style>
+.pv{background:#142030;color:#eef1f4;font:500 .85rem/1.4 Figtree,system-ui,sans-serif;padding:10px 16px}
+.pv .in{max-width:1080px;margin:0 auto;display:flex;gap:10px 18px;align-items:center;flex-wrap:wrap}
+.pv b{color:#f5b82a;font-weight:700}
+.pv nav{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.pv a{color:#eef1f4;text-decoration:none;padding:4px 10px;border:1px solid #3a4a5e;border-radius:999px}
+.pv a[aria-current]{background:#f5b82a;color:#1d1500;border-color:#f5b82a}
+.pvtoast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#142030;color:#eef1f4;padding:12px 16px;border-radius:10px;font:500 .9rem Figtree,system-ui,sans-serif;max-width:min(92vw,520px);box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:99}
+</style></head><body><div class="pv" role="note"><div class="in"><span><b>Preview</b> with sample data. Sign-in, payments and uploads work once the store app is deployed.</span><nav aria-label="Preview pages"><a href="/member/" aria-current="page">Shop</a><a href="/member/welcome/">After purchase</a><a href="/member/login/">Member sign in</a><a href="/member/downloads/">My downloads</a><a href="/member/admin/">Admin sign in</a><a href="/member/admin/dashboard/">Admin dashboard</a></nav></div></div>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a showroom lot. Each site is a numbered listing: browser-framed screenshot on one side, a tabbed spec sheet (Overview / For sale) on the other, with a hanging price tag. */
+:root{
+  --bg:#eef1f4; --surface:#ffffff; --ink:#142030; --muted:#566273; --line:#d6dce3;
+  --tag:#f2a900; --tag-ink:#1d1500; --accent:#1d5fd1; --chrome:#dfe4ea; --ok:#1d7a4c;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f151d; --surface:#17202b; --ink:#e7edf4; --muted:#9aa7b6; --line:#2a3644;
+  --tag:#f5b82a; --tag-ink:#1d1500; --accent:#7aa8ff; --chrome:#222d3a; --ok:#5fd39a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f151d; --surface:#17202b; --ink:#e7edf4; --muted:#9aa7b6; --line:#2a3644;
+  --tag:#f5b82a; --tag-ink:#1d1500; --accent:#7aa8ff; --chrome:#222d3a; --ok:#5fd39a; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:24px}
+h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.05;text-wrap:balance}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.mono{font-family:var(--f-mono)}
+.eyebrow{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* Header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px;flex-wrap:wrap}
+.brand{font-family:var(--f-display);font-weight:800;font-size:1.25rem;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:10px}
+.brand .dot{width:14px;height:14px;border-radius:3px;background:var(--tag);transform:rotate(45deg)}
+.jump{display:flex;gap:6px;flex-wrap:wrap}
+.jump a{font-size:.88rem;text-decoration:none;color:var(--muted);padding:6px 10px;border-radius:999px}
+.jump a:hover{color:var(--ink);background:var(--surface)}
+
+/* Intro */
+.intro{padding-block:64px 40px;display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:end}
+.intro h1{font-size:clamp(2.6rem,6.5vw,4.8rem);font-weight:800;letter-spacing:-.02em}
+.intro h1 span{background:linear-gradient(transparent 62%,var(--tag) 62% 92%,transparent 92%)}
+.intro .lede{font-size:1.15rem;color:var(--muted);max-width:52ch;margin-top:18px}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.facts div{padding:18px;display:grid;gap:2px;min-width:0}
+.facts div+div{border-left:1px solid var(--line)}
+.facts b{font-family:var(--f-display);font-size:2rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.facts span{font-size:.82rem;color:var(--muted)}
+
+/* Listings */
+.listings{display:grid;gap:56px;padding-bottom:72px}
+.listing{display:grid;grid-template-columns:1.25fr 1fr;gap:36px;align-items:start;padding-top:48px;border-top:1px solid var(--line);scroll-margin-top:80px}
+.listing:nth-child(even) .shot{order:2}
+.lot{display:flex;align-items:baseline;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.lot .num{font-family:var(--f-mono);font-size:.8rem;color:var(--muted)}
+.cat{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--muted)}
+
+/* Browser frame */
+.shot{position:relative;min-width:0}
+.browser{border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:var(--surface);box-shadow:0 18px 40px -24px rgba(10,20,35,.45)}
+.bar{display:flex;align-items:center;gap:10px;background:var(--chrome);padding:9px 12px}
+.lights{display:flex;gap:6px}
+.lights i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.url{flex:1;min-width:0;background:var(--surface);border-radius:6px;padding:3px 10px;font-family:var(--f-mono);font-size:.74rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.browser img{display:block;width:100%;height:auto;aspect-ratio:1280/800;object-fit:cover;object-position:top}
+.pricetag{position:absolute;top:-14px;right:18px;background:var(--tag);color:var(--tag-ink);font-family:var(--f-display);font-weight:800;padding:8px 14px 8px 22px;border-radius:4px 8px 8px 4px;clip-path:polygon(12px 0,100% 0,100% 100%,12px 100%,0 50%);font-size:1rem;line-height:1.1;text-align:right}
+.pricetag small{display:block;font-family:var(--f-mono);font-weight:600;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase}
+
+/* Spec sheet */
+.sheet{min-width:0;display:grid;gap:18px}
+.sheet h2{font-size:clamp(1.8rem,3.4vw,2.4rem);font-weight:800;letter-spacing:-.01em}
+.sheet .what{color:var(--muted);font-size:1.02rem}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+.tabs button{font:inherit;font-weight:600;font-size:.95rem;background:none;border:0;color:var(--muted);padding:10px 14px;margin-bottom:-1px;border-bottom:3px solid transparent;cursor:pointer;min-height:44px;display:flex;align-items:center;gap:8px}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.tabs button .pill{font-family:var(--f-mono);font-size:.7rem;background:var(--tag);color:var(--tag-ink);border-radius:4px;padding:1px 6px}
+.panel{display:grid;gap:18px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.cols>div{min-width:0}
+.panel h3{font-family:var(--f-mono);font-size:.74rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+ul.pts{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:.95rem}
+ul.pts li{padding-left:20px;position:relative}
+ul.pts li::before{content:"";position:absolute;left:2px;top:.62em;width:8px;height:8px;border:2px solid var(--accent);border-radius:2px;transform:rotate(45deg)}
+ul.ben li::before{border-color:var(--ok);border-radius:50%;transform:none}
+
+/* For sale */
+.sale{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;display:grid;gap:18px}
+.price-row{display:flex;align-items:end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.big{font-family:var(--f-display);font-weight:800;font-size:3rem;line-height:1;font-variant-numeric:tabular-nums}
+.big small{font-family:var(--f-mono);font-size:.78rem;font-weight:400;color:var(--muted);display:block;margin-bottom:6px;letter-spacing:.08em;text-transform:uppercase}
+.terms{font-size:.85rem;color:var(--muted);max-width:28ch}
+form.offer{display:grid;gap:12px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{font-size:.82rem;font-weight:600;display:grid;gap:4px;min-width:0}
+input{font:inherit;font-weight:400;width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);min-height:44px}
+.money{position:relative}
+.money span{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-family:var(--f-mono)}
+.money input{padding-left:26px;font-family:var(--f-mono)}
+.btn{font:inherit;font-weight:700;border:0;border-radius:8px;padding:12px 18px;background:var(--ink);color:var(--bg);cursor:pointer;min-height:44px;justify-self:start}
+.btn:hover{opacity:.9}
+.msg{font-size:.88rem}
+.msg.err{color:#c0362c}
+:root[data-theme="dark"] .msg.err{color:#ff8b80}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .msg.err{color:#ff8b80}}
+.summary{background:var(--bg);border:1px dashed var(--line);border-radius:8px;padding:14px;font-family:var(--f-mono);font-size:.82rem;white-space:pre-wrap;word-break:break-word}
+.summary-wrap{display:grid;gap:10px}
+.summary-wrap .btn{background:var(--tag);color:var(--tag-ink)}
+
+footer{border-top:1px solid var(--line);padding-block:28px;color:var(--muted);font-size:.86rem}
+
+@media (max-width:900px){
+  .intro,.listing{grid-template-columns:1fr}
+  .listing:nth-child(even) .shot{order:0}
+}
+@media (max-width:520px){
+  .wrap{padding-inline:16px}
+  .cols,.row2{grid-template-columns:1fr}
+  .facts b{font-size:1.5rem}
+  .jump{display:none}
+}
+.tabs{overflow-x:auto}
+.tabs button{white-space:nowrap}
+.preview{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;display:grid;gap:16px}
+.preview .live{display:grid;gap:12px}
+.linkbox{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-width:0}
+.linkbox span{font-family:var(--f-mono);font-size:.8rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
+a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.empty{color:var(--muted);font-size:.95rem}
+.owner{border-top:1px dashed var(--line);padding-top:16px;display:grid;gap:10px}
+.owner .row{display:flex;gap:10px;flex-wrap:wrap}
+.owner .row input{flex:1 1 220px}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.ownerhint{font-size:.82rem;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+.buynow{text-decoration:none;display:inline-flex;align-items:center;justify-self:start;background:var(--tag);color:var(--tag-ink)}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="dot" aria-hidden="true"></span>Turnkey Site Shop</a>
+    <nav class="jump" aria-label="Listings" id="jump"></nav>
+  </div>
+</header>
+
+<main id="top" class="wrap">
+  <section class="intro" aria-labelledby="intro-h">
+    <div>
+      <p class="eyebrow">Pre-built websites for sale</p>
+      <h1 id="intro-h">Skip the build. <span>Open for business.</span></h1>
+      <p class="lede">Each site below is finished, working and styled for a real kind of business. Look over the screenshot and features, then open the For sale tab to make an offer.</p>
+    </div>
+    <div class="facts" aria-label="At a glance">
+      <div><b id="count">5</b><span>sites listed</span></div>
+      <div><b>$100</b><span>starting price</span></div>
+      <div><b>1</b><span>file each, ready to edit</span></div>
+    </div>
+  </section>
+
+  <div class="listings" id="listings"></div>
+</main>
+
+<footer>
+  <div class="wrap">Screenshots show each site's opening screen at desktop width. Prices are starting prices; final price is agreed with the seller before transfer.</div>
+</footer>
+
+<script>
+const SELLER = "[YOUR EMAIL]";
+const SITES = [
+  {
+    id:"rv-splash", name:"RV Splash", cat:"RV wash & repair", url:"rvsplash", img:"/member/img/rvsplash.jpg",
+    what:"A full service site for a mobile RV wash and repair business, with pricing by the foot so customers see a number before booking.",
+    points:[
+      "Live wash estimator: drag RV length, pick a package, add extras",
+      "Three wash packages at $4, $7 and $16 per foot",
+      "Monthly plans with a 12-month service schedule chart",
+      "Repair menu: roof and seals, slide-outs, awnings",
+      "How it works, FAQ, account and admin sections"
+    ],
+    benefits:[
+      "Fewer quote calls because prices are shown up front",
+      "Recurring monthly revenue from wash plans",
+      "Repairs found during washes turn into extra jobs",
+      "Covers Class A, B, C, fifth wheels and trailers"
+    ]
+  },
+  {
+    id:"rvsplash-com", name:"RvSplash.com", cat:"Brand & domain page", url:"rvsplash.com", img:"/member/img/rvsplashcom.jpg",
+    what:"A one-page brand concept for the RvSplash name, showing what the brand could become and how a buyer could launch it.",
+    points:[
+      "Four service bays: wash, service, parts, technicians",
+      "Why the name works: short, two real words, dot com",
+      "Five ready taglines for trucks, signs and ads",
+      "Six business models, from drive-through wash to franchise",
+      "Built-in offer form and step-by-step sale process"
+    ],
+    benefits:[
+      "A finished brand story to show partners or investors",
+      "Picks a direction without paying a branding agency",
+      "Works as a landing page while the business is set up",
+      "One look that stretches to every RV service"
+    ]
+  },
+  {
+    id:"peakfit", name:"Peakfit", cat:"Fitness tracker", url:"peakfit.vip", img:"/member/img/peakfit.jpg",
+    what:"A private, members-only fitness tracker that keeps goals, training and nutrition on one page for each member.",
+    points:[
+      "Goals with a start number, target, deadline and % complete",
+      "Training log with minutes, effort (RPE) and weekly streaks",
+      "Nutrition log for calories, macros, fiber, sodium and water",
+      "Workout video search, progress charts and daily motivation",
+      "Member sign-up with owner approval and personal links"
+    ],
+    benefits:[
+      "A branded app a trainer or gym can offer clients",
+      "Members see progress, which keeps them signing up again",
+      "Each member's data stays private to their account",
+      "Works on a phone at the gym and a computer at home"
+    ]
+  },
+  {
+    id:"shine-lane", name:"Shine Lane Car Wash", cat:"Car wash & detailing", url:"shinelanecarwash", img:"/member/img/carwash.jpg",
+    what:"A car wash and detailing site built around memberships and a quote form that changes to fit the service picked.",
+    points:[
+      "Service menu from express wash to ceramic coating",
+      "Monthly unlimited plans with $10 off each extra car",
+      "Smart quote builder with a running price estimate",
+      "Three-step how-it-works panel and why-us section",
+      "Contact by text, call or email, chosen by the customer"
+    ],
+    benefits:[
+      "Memberships bring steady monthly income",
+      "Quote form collects size, condition and add-ons up front",
+      "Clear starting prices build trust before the visit",
+      "Placeholders ready for your address, hours and phone"
+    ]
+  },
+  {
+    id:"greenline", name:"Greenline Yard & Tree", cat:"Lawn & tree care", url:"greenlineyard", img:"/member/img/greenline.jpg",
+    what:"A lawn care, tree trimming and brush removal site that sells both one-time jobs and monthly property plans.",
+    points:[
+      "Three services with starting prices: $65, $225, $150",
+      "One-time / monthly switch across all pricing plans",
+      "Estimator by lot size, trees and brush loads",
+      "Walk-through booking form with service address",
+      "Business hours, phone and standard cut sheet"
+    ],
+    benefits:[
+      "Turns one-off cleanups into monthly customers",
+      "Ballpark estimates filter out tire-kickers",
+      "Plans from $160 to $345 a month already priced",
+      "Easy to rename for any landscaping company"
+    ]
+  },
+  {
+    id:"keystone", name:"Keystone Plumbing Co.", cat:"Plumbing services", url:"keystoneplumbing", img:"/member/img/plumbing.jpg",
+    what:"A residential and commercial plumbing site with a clickable service catalog, a smart quote form and a 24/7 emergency line.",
+    points:[
+      "Service catalog filtered by residential or commercial",
+      "Add to quote: each service brings its own questions",
+      "Five-step work order with a live ballpark price range",
+      "Four-step process from request to warranty",
+      "Service area, hours, emergency line and FAQ"
+    ],
+    benefits:[
+      "Detailed quote requests mean fewer back-and-forth calls",
+      "Emergency timing option captures urgent, high-value jobs",
+      "License, insurance and 2-year warranty build trust",
+      "Serves homeowners and businesses from one site"
+    ]
+  }
+];
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const listings = document.getElementById("listings");
+const jump = document.getElementById("jump");
+document.getElementById("count").textContent = SITES.length;
+
+SITES.forEach((s, i) => {
+  const n = String(i + 1).padStart(2, "0");
+  jump.insertAdjacentHTML("beforeend", `<a href="#${s.id}">${esc(s.name)}</a>`);
+  listings.insertAdjacentHTML("beforeend", `
+  <article class="listing" id="${s.id}" aria-labelledby="${s.id}-h">
+    <div class="shot">
+      <div class="browser">
+        <div class="bar"><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="url">${esc(s.url)}</span></div>
+        <img src="${s.img}" width="1280" height="800" alt="Screenshot of the ${esc(s.name)} website home screen" loading="lazy">
+      </div>
+      <div class="pricetag"><small>From</small>$100</div>
+    </div>
+    <div class="sheet">
+      <div>
+        <div class="lot"><span class="num">Lot ${n}</span><span class="cat">${esc(s.cat)}</span></div>
+        <h2 id="${s.id}-h">${esc(s.name)}</h2>
+      </div>
+      <p class="what">${esc(s.what)}</p>
+      <div class="tabs" role="tablist" aria-label="${esc(s.name)} details">
+        <button type="button" role="tab" id="${s.id}-t1" aria-controls="${s.id}-p1" aria-selected="true">Overview</button>
+        <button type="button" role="tab" id="${s.id}-t2" aria-controls="${s.id}-p2" aria-selected="false" tabindex="-1">For sale <span class="pill">$100+</span></button>
+        <button type="button" role="tab" id="${s.id}-t3" aria-controls="${s.id}-p3" aria-selected="false" tabindex="-1">Preview</button>
+      </div>
+      <div class="panel" role="tabpanel" id="${s.id}-p1" aria-labelledby="${s.id}-t1">
+        <div class="cols">
+          <div><h3>Key points</h3><ul class="pts">${s.points.map(p=>`<li>${esc(p)}</li>`).join("")}</ul></div>
+          <div><h3>Benefits</h3><ul class="pts ben">${s.benefits.map(p=>`<li>${esc(p)}</li>`).join("")}</ul></div>
+        </div>
+      </div>
+      <div class="panel" role="tabpanel" id="${s.id}-p2" aria-labelledby="${s.id}-t2" hidden>
+        <div class="sale">
+          <div class="price-row">
+            <p class="big"><small>Starting price</small>$100</p>
+            <p class="terms">Offers start at $100. Higher offers are welcome and reviewed first.</p>
+          </div>
+          <a class="btn buynow" href="/member/welcome/">Buy now · $100</a>
+          <div>
+            <h3>What you get</h3>
+            <ul class="pts ben">
+              <li>The complete ${esc(s.name)} website as one editable file</li>
+              <li>All page sections, pricing tools and forms shown</li>
+              <li>Rename and rebrand it for your own business</li>
+            </ul>
+          </div>
+          <form class="offer" id="${s.id}-form" novalidate>
+            <div class="row2">
+              <label for="${s.id}-name">Full name<input id="${s.id}-name" autocomplete="name" required></label>
+              <label for="${s.id}-email">Email<input id="${s.id}-email" type="email" autocomplete="email" required></label>
+            </div>
+            <label for="${s.id}-amt">Your offer (USD)
+              <span class="money"><span aria-hidden="true">$</span><input id="${s.id}-amt" type="number" inputmode="numeric" min="100" step="1" value="100" required></span>
+            </label>
+            <button class="btn" type="submit">Prepare my offer</button>
+            <p class="msg" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+      <div class="panel" role="tabpanel" id="${s.id}-p3" aria-labelledby="${s.id}-t3" hidden>
+        <div class="preview">
+          <div>
+            <h3>Live preview</h3>
+            <p class="empty">Click through the working ${esc(s.name)} site before you make an offer.</p>
+          </div>
+          <div class="live" data-live="${s.id}">
+            <p class="empty">Preview link coming soon.</p>
+          </div>
+          <form class="owner" data-owner="${s.id}" hidden novalidate>
+            <label for="${s.id}-plink">Preview link (only you can change this)
+              <span class="row"><input id="${s.id}-plink" type="url" placeholder="https://claude.ai/artifact/…" autocomplete="off"><button class="btn" type="submit">Save link</button></span>
+            </label>
+            <p class="ownerhint" role="status" aria-live="polite">Share the site's own page first so buyers can open it.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </article>`);
+});
+
+// Tabs
+listings.addEventListener("click", e => {
+  const tab = e.target.closest('[role="tab"]');
+  if (!tab) return;
+  selectTab(tab);
+});
+listings.addEventListener("keydown", e => {
+  const tab = e.target.closest('[role="tab"]');
+  if (!tab || !["ArrowLeft","ArrowRight"].includes(e.key)) return;
+  const tabs = [...tab.parentElement.children];
+  const next = tabs[(tabs.indexOf(tab) + (e.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length];
+  selectTab(next); next.focus();
+});
+function selectTab(tab){
+  [...tab.parentElement.children].forEach(t => {
+    const on = t === tab;
+    t.setAttribute("aria-selected", on);
+    t.tabIndex = on ? 0 : -1;
+    document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+  });
+}
+
+// Preview links: shared in the page's store, editable by the owner
+const previews = {};
+let db = null;
+function renderPreview(id){
+  const box = document.querySelector(`[data-live="${id}"]`);
+  const url = previews[id];
+  if (!url){ box.innerHTML = `<p class="empty">Preview link coming soon.</p>`; return; }
+  box.innerHTML = `<div class="linkbox"><span></span></div><a class="btn" target="_blank" rel="noopener">Open live preview ↗</a>`;
+  box.querySelector("span").textContent = url;
+  box.querySelector("a").href = url;
+}
+const okUrl = u => { try { const x = new URL(u); return x.protocol === "https:" || x.protocol === "http:"; } catch { return false; } };
+(async () => {
+  try { db = await window.claude?.use("db"); } catch { db = null; }
+  if (!db) return;
+  db.collection("previews").onSnapshot(snap => {
+    snap.docs.forEach(d => { const u = d.data()?.url; previews[d.id] = (typeof u === "string" && okUrl(u)) ? u : ""; });
+    snap.docChanges().forEach(c => { if (c.type === "removed") previews[c.doc.id] = ""; });
+    SITES.forEach(s => {
+      renderPreview(s.id);
+      const inp = document.getElementById(`${s.id}-plink`);
+      if (inp && document.activeElement !== inp) inp.value = previews[s.id] || "";
+    });
+  }, () => {});
+  let user = null;
+  try { user = await window.claude?.use("user"); } catch {}
+  const canEdit = user ? (user.isOwner() || user.canEdit()) : false;
+  if (canEdit) document.querySelectorAll("[data-owner]").forEach(f => f.hidden = false);
+})();
+listings.addEventListener("submit", async e => {
+  const f = e.target.closest("[data-owner]");
+  if (!f) return;
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  const id = f.dataset.owner, hint = f.querySelector(".ownerhint");
+  const val = document.getElementById(`${id}-plink`).value.trim();
+  if (val && !okUrl(val)){ hint.textContent = "Enter a full link that starts with https://"; return; }
+  hint.textContent = "Saving…";
+  try {
+    const ref = db.collection("previews").doc(id);
+    if (val) await ref.set({ url: val }); else await ref.delete();
+    hint.textContent = val ? "Saved. Buyers now see this link." : "Link removed.";
+  } catch (err) {
+    hint.textContent = "Couldn't save the link. Check that you're signed in as the page owner, then try again.";
+  }
+}, true);
+
+// Offers
+listings.addEventListener("submit", e => {
+  e.preventDefault();
+  const f = e.target, id = f.id.replace(/-form$/, "");
+  const site = SITES.find(s => s.id === id);
+  const name = f.querySelector(`#${id}-name`).value.trim();
+  const email = f.querySelector(`#${id}-email`).value.trim();
+  const amt = Math.round(Number(f.querySelector(`#${id}-amt`).value));
+  const msg = f.querySelector(".msg");
+  msg.className = "msg";
+  if (!name) return fail("Enter your full name.");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail("Enter an email address like name@example.com.");
+  if (!amt || amt < 100) return fail("Offers start at $100. Raise your offer to at least $100.");
+  function fail(t){ msg.textContent = t; msg.classList.add("err"); }
+  const text = `Offer for: ${site.name}\nAmount: $${amt.toLocaleString("en-US")}\nName: ${name}\nEmail: ${email}`;
+  f.querySelector(".summary-wrap")?.remove();
+  msg.textContent = "";
+  f.insertAdjacentHTML("beforeend", `<div class="summary-wrap">
+      <p class="msg">Copy your offer and send it to <b class="mono" style="user-select:all">${esc(SELLER)}</b>.</p>
+      <div class="summary" id="${id}-sum">${esc(text)}</div>
+      <button class="btn" type="button" data-copy="${id}-sum">Copy offer</button>
+    </div>`);
+});
+listings.addEventListener("click", e => {
+  const b = e.target.closest("[data-copy]");
+  if (!b) return;
+  const el = document.getElementById(b.dataset.copy);
+  const done = () => { b.textContent = "Copied"; setTimeout(() => b.textContent = "Copy offer", 1800); };
+  const fallback = () => { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Selected, press copy"; };
+  try { navigator.clipboard.writeText(el.textContent).then(done, fallback); } catch { fallback(); }
+});
+</script>
+</body></html>

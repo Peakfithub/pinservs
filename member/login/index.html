@@ -1,0 +1,76 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Member sign in</title><meta name="robots" content="noindex"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"><style>
+/* Layout: the shop's showroom look carried into a quiet locker room. Narrow column, one card per purchase, files as rows. */
+:root{
+  --bg:#eef1f4;--surface:#fff;--ink:#142030;--muted:#566273;--line:#d6dce3;--soft:#f6f8fa;
+  --tag:#f2a900;--tag-ink:#1d1500;--accent:#1d5fd1;--ok:#1d7a4c;--bad:#b3261e;--pdf:#b3261e;--zip:#1d5fd1;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0f151d;--surface:#17202b;--ink:#e7edf4;--muted:#9aa7b6;--line:#2a3644;--soft:#1c2632;
+  --tag:#f5b82a;--accent:#7aa8ff;--ok:#5fd39a;--bad:#ff8b80;--pdf:#ff8b80;--zip:#7aa8ff;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-body)}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--tag);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);line-height:1.1;margin:0;text-wrap:balance}
+h1{font-size:clamp(1.9rem,5vw,2.6rem);font-weight:800;letter-spacing:-.01em}
+h2{font-size:1.35rem;font-weight:800}
+p{margin:0}
+.eyebrow{font:600 .74rem var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.small{font-size:.9rem;color:var(--muted)}
+header.top{border-bottom:1px solid var(--line);background:var(--bg)}
+header.top .in{max-width:1080px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{font:800 1.2rem var(--f-display);color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px}
+.brand i{width:13px;height:13px;border-radius:3px;background:var(--tag);transform:rotate(45deg)}
+nav.links{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+nav.links a,nav.links button{font:500 .92rem var(--f-body);color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:999px;background:none;border:0;cursor:pointer;min-height:40px}
+nav.links a:hover,nav.links button:hover{color:var(--ink);background:var(--surface)}
+nav.links form{margin:0;display:flex}
+main.col{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:48px 72px;display:grid;gap:24px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:24px;display:grid;gap:16px;min-width:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--tag);color:var(--tag-ink);font:700 1rem var(--f-body);text-decoration:none;border:0;border-radius:8px;padding:12px 18px;cursor:pointer;min-height:44px}
+.btn.dark{background:var(--ink);color:var(--bg)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+form.stack{display:grid;gap:14px}
+label{display:grid;gap:4px;font-size:.88rem;font-weight:600}
+input[type=email],input[type=password],input[type=text],select{font:inherit;font-weight:400;width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;background:var(--soft);color:var(--ink);min-height:44px}
+.alert{border-radius:8px;padding:12px 14px;font-size:.92rem;background:var(--soft);border:1px solid var(--line)}
+.alert.bad{color:var(--bad);border-color:currentColor}
+.alert.ok{color:var(--ok);border-color:currentColor}
+.files{list-style:none;margin:0;padding:0;display:grid;border-top:1px solid var(--line)}
+.files li{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.files li>div{min-width:0}
+.fname{font-weight:600;overflow-wrap:anywhere}
+.badge{font:600 .68rem var(--f-mono);letter-spacing:.06em;border:1.5px solid currentColor;border-radius:4px;padding:2px 6px}
+.badge.pdf{color:var(--pdf)}.badge.zip{color:var(--zip)}
+.dl{font:700 .9rem var(--f-body);text-decoration:none;color:var(--ink);border:1.5px solid var(--line);border-radius:8px;padding:8px 12px;min-height:40px;display:inline-flex;align-items:center;white-space:nowrap}
+.dl:hover{border-color:var(--ink)}
+.empty{color:var(--muted);font-size:.95rem;padding:12px 0;border-top:1px solid var(--line)}
+@media (max-width:520px){.files li{grid-template-columns:auto 1fr}.files li .dl{grid-column:1/-1;justify-content:center}}
+
+.pv{background:#142030;color:#eef1f4;font:500 .85rem/1.4 Figtree,system-ui,sans-serif;padding:10px 16px}
+.pv .in{max-width:1080px;margin:0 auto;display:flex;gap:10px 18px;align-items:center;flex-wrap:wrap}
+.pv b{color:#f5b82a;font-weight:700}
+.pv nav{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.pv a{color:#eef1f4;text-decoration:none;padding:4px 10px;border:1px solid #3a4a5e;border-radius:999px}
+.pv a[aria-current]{background:#f5b82a;color:#1d1500;border-color:#f5b82a}
+.pvtoast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#142030;color:#eef1f4;padding:12px 16px;border-radius:10px;font:500 .9rem Figtree,system-ui,sans-serif;max-width:min(92vw,520px);box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:99}
+</style></head><body><div class="pv" role="note"><div class="in"><span><b>Preview</b> with sample data. Sign-in, payments and uploads work once the store app is deployed.</span><nav aria-label="Preview pages"><a href="/member/">Shop</a><a href="/member/welcome/">After purchase</a><a href="/member/login/" aria-current="page">Member sign in</a><a href="/member/downloads/">My downloads</a><a href="/member/admin/">Admin sign in</a><a href="/member/admin/dashboard/">Admin dashboard</a></nav></div></div>
+<header class="top"><div class="in"><a class="brand" href="/member/"><i aria-hidden="true"></i>Turnkey Site Shop</a><nav class="links" aria-label="Account"><a href="/member/login/">Member sign in</a></nav></div></header>
+<main class="col">
+  <div class="card">
+    <p class="eyebrow">Members</p>
+    <h1>Sign in to your downloads</h1>
+    
+    <form class="stack" method="get" action="/member/downloads/">
+      <label for="email">Email used at checkout<input id="email" name="email" type="email" autocomplete="email" required value=""></label>
+      <label for="password">Password<input id="password" name="password" type="password" autocomplete="current-password" required minlength="8"></label>
+      <button class="btn dark" type="submit">Sign in</button>
+    </form>
+    <p class="small">First time here? Your account is created when you buy. You set your password on the page you see right after payment. Lost it? Ask the seller for a new access link.</p>
+  </div></main><script>window.pvNote=function(t){var o=document.querySelector(".pvtoast");if(!o){o=document.createElement("div");o.className="pvtoast";o.setAttribute("role","status");document.body.appendChild(o);}o.textContent=t;clearTimeout(window.pvT);window.pvT=setTimeout(function(){o.remove();},3800);};
+document.addEventListener("click",function(e){var a=e.target.closest("a[data-pv]");if(a){e.preventDefault();pvNote(a.getAttribute("data-pv"));}});</script></body></html>

@@ -1,0 +1,332 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Turnkey Store Admin</title><meta name="robots" content="noindex"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"><style>
+/* Layout: the shop's showroom look carried into a quiet locker room. Narrow column, one card per purchase, files as rows. */
+:root{
+  --bg:#eef1f4;--surface:#fff;--ink:#142030;--muted:#566273;--line:#d6dce3;--soft:#f6f8fa;
+  --tag:#f2a900;--tag-ink:#1d1500;--accent:#1d5fd1;--ok:#1d7a4c;--bad:#b3261e;--pdf:#b3261e;--zip:#1d5fd1;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0f151d;--surface:#17202b;--ink:#e7edf4;--muted:#9aa7b6;--line:#2a3644;--soft:#1c2632;
+  --tag:#f5b82a;--accent:#7aa8ff;--ok:#5fd39a;--bad:#ff8b80;--pdf:#ff8b80;--zip:#7aa8ff;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-body)}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--tag);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);line-height:1.1;margin:0;text-wrap:balance}
+h1{font-size:clamp(1.9rem,5vw,2.6rem);font-weight:800;letter-spacing:-.01em}
+h2{font-size:1.35rem;font-weight:800}
+p{margin:0}
+.eyebrow{font:600 .74rem var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.small{font-size:.9rem;color:var(--muted)}
+header.top{border-bottom:1px solid var(--line);background:var(--bg)}
+header.top .in{max-width:1080px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{font:800 1.2rem var(--f-display);color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px}
+.brand i{width:13px;height:13px;border-radius:3px;background:var(--tag);transform:rotate(45deg)}
+nav.links{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+nav.links a,nav.links button{font:500 .92rem var(--f-body);color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:999px;background:none;border:0;cursor:pointer;min-height:40px}
+nav.links a:hover,nav.links button:hover{color:var(--ink);background:var(--surface)}
+nav.links form{margin:0;display:flex}
+main.col{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:48px 72px;display:grid;gap:24px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:24px;display:grid;gap:16px;min-width:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--tag);color:var(--tag-ink);font:700 1rem var(--f-body);text-decoration:none;border:0;border-radius:8px;padding:12px 18px;cursor:pointer;min-height:44px}
+.btn.dark{background:var(--ink);color:var(--bg)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+form.stack{display:grid;gap:14px}
+label{display:grid;gap:4px;font-size:.88rem;font-weight:600}
+input[type=email],input[type=password],input[type=text],select{font:inherit;font-weight:400;width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;background:var(--soft);color:var(--ink);min-height:44px}
+.alert{border-radius:8px;padding:12px 14px;font-size:.92rem;background:var(--soft);border:1px solid var(--line)}
+.alert.bad{color:var(--bad);border-color:currentColor}
+.alert.ok{color:var(--ok);border-color:currentColor}
+.files{list-style:none;margin:0;padding:0;display:grid;border-top:1px solid var(--line)}
+.files li{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.files li>div{min-width:0}
+.fname{font-weight:600;overflow-wrap:anywhere}
+.badge{font:600 .68rem var(--f-mono);letter-spacing:.06em;border:1.5px solid currentColor;border-radius:4px;padding:2px 6px}
+.badge.pdf{color:var(--pdf)}.badge.zip{color:var(--zip)}
+.dl{font:700 .9rem var(--f-body);text-decoration:none;color:var(--ink);border:1.5px solid var(--line);border-radius:8px;padding:8px 12px;min-height:40px;display:inline-flex;align-items:center;white-space:nowrap}
+.dl:hover{border-color:var(--ink)}
+.empty{color:var(--muted);font-size:.95rem;padding:12px 0;border-top:1px solid var(--line)}
+@media (max-width:520px){.files li{grid-template-columns:auto 1fr}.files li .dl{grid-column:1/-1;justify-content:center}}
+
+[hidden]{display:none!important}
+main.wide{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:32px 72px;display:grid;gap:24px}
+.head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{font:600 .95rem var(--f-body);background:none;border:0;color:var(--muted);padding:10px 14px;margin-bottom:-1px;border-bottom:3px solid transparent;cursor:pointer;min-height:44px;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+section[role=tabpanel]{display:grid;gap:18px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.stats div{padding:18px;display:grid;gap:2px;min-width:0}
+.stats div+div{border-left:1px solid var(--line)}
+.stats b{font:800 2rem var(--f-display);font-variant-numeric:tabular-nums;line-height:1.1}
+.stats span{font-size:.85rem;color:var(--muted)}
+.todo{display:grid;gap:8px}
+.todo li{font-size:.95rem}
+.prod{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start}
+.prod>div{min-width:0}
+.buy{font:.8rem var(--f-mono);color:var(--muted);overflow-wrap:anywhere;user-select:all}
+.uploader{display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:var(--soft);border:1.5px dashed var(--line);border-radius:10px;padding:14px}
+.uploader input[type=file]{font:inherit;font-size:.9rem;max-width:100%;flex:1 1 220px}
+.uploader.drag{border-color:var(--accent)}
+.rowacts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.mini{font:600 .85rem var(--f-body);background:transparent;color:var(--ink);border:1.5px solid var(--line);border-radius:8px;padding:6px 10px;min-height:36px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap}
+.mini:hover{border-color:var(--ink)}
+.mini.danger{color:var(--bad)}
+.mini.danger.armed{background:var(--bad);color:var(--surface);border-color:var(--bad)}
+.msg{font-size:.88rem;color:var(--muted)}
+.msg.err{color:var(--bad)}
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 .72rem var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:4px;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:2px 4px 2px 10px;font-size:.84rem}
+.chip button{background:none;border:0;color:var(--muted);cursor:pointer;font-size:1rem;line-height:1;padding:4px 6px;border-radius:999px}
+.chip button:hover{color:var(--bad)}
+.state{font:600 .72rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;border-radius:4px;padding:2px 6px;white-space:nowrap}
+.state.on{color:var(--ok);border:1.5px solid currentColor}
+.state.off{color:var(--muted);border:1.5px dashed currentColor}
+.inline{display:flex;gap:8px;flex-wrap:wrap;align-items:end}
+.inline label{flex:1 1 200px}
+.cell select{min-height:36px;padding:6px 8px;font-size:.88rem;width:auto;flex:1 1 160px}
+.cell{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center}
+.linkout{display:grid;gap:6px;margin-top:8px;background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:10px}
+.linkout code{font:.78rem var(--f-mono);overflow-wrap:anywhere;user-select:all}
+@media (max-width:720px){.stats{grid-template-columns:1fr 1fr}.stats div:nth-child(3){border-left:0}.stats div:nth-child(n+3){border-top:1px solid var(--line)}.prod{grid-template-columns:1fr}}
+
+.pv{background:#142030;color:#eef1f4;font:500 .85rem/1.4 Figtree,system-ui,sans-serif;padding:10px 16px}
+.pv .in{max-width:1080px;margin:0 auto;display:flex;gap:10px 18px;align-items:center;flex-wrap:wrap}
+.pv b{color:#f5b82a;font-weight:700}
+.pv nav{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.pv a{color:#eef1f4;text-decoration:none;padding:4px 10px;border:1px solid #3a4a5e;border-radius:999px}
+.pv a[aria-current]{background:#f5b82a;color:#1d1500;border-color:#f5b82a}
+.pvtoast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#142030;color:#eef1f4;padding:12px 16px;border-radius:10px;font:500 .9rem Figtree,system-ui,sans-serif;max-width:min(92vw,520px);box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:99}
+</style></head><body><div class="pv" role="note"><div class="in"><span><b>Preview</b> with sample data. Sign-in, payments and uploads work once the store app is deployed.</span><nav aria-label="Preview pages"><a href="/member/">Shop</a><a href="/member/welcome/">After purchase</a><a href="/member/login/">Member sign in</a><a href="/member/downloads/">My downloads</a><a href="/member/admin/">Admin sign in</a><a href="/member/admin/dashboard/" aria-current="page">Admin dashboard</a></nav></div></div>
+<header class="top"><div class="in"><a class="brand" href="/member/"><i aria-hidden="true"></i>Turnkey Site Shop</a><nav class="links" aria-label="Account"><a href="/member/downloads/">Member area</a><a href="/member/">Shop</a><form method="get" action="/member/admin/"><button type="submit">Sign out</button></form></nav></div></header>
+<main class="wide">
+  <div class="head"><div><p class="eyebrow">Owner dashboard</p><h1>Turnkey Store</h1></div>
+  <nav class="tabs" role="tablist" aria-label="Dashboard sections">
+    <button role="tab" id="t-overview" aria-controls="overview">Overview</button>
+    <button role="tab" id="t-files" aria-controls="files">Files</button>
+    <button role="tab" id="t-members" aria-controls="members">Members</button>
+    <button role="tab" id="t-orders" aria-controls="orders">Orders</button>
+  </nav></div>
+  <section id="overview" role="tabpanel" aria-labelledby="t-overview"></section>
+  <section id="files" role="tabpanel" aria-labelledby="t-files" hidden></section>
+  <section id="members" role="tabpanel" aria-labelledby="t-members" hidden></section>
+  <section id="orders" role="tabpanel" aria-labelledby="t-orders" hidden></section>
+  </main>
+  <script>(function(){var real=window.fetch;window.fetch=function(u,o){u=String(u);if(u.indexOf("/admin/api/")===0){var m=(o&&o.method)||"GET";var d={ok:true,hours:72,url:"https://your-store.workers.dev/claim?token=sample-one-time-link"};
+var msg={PUT:"Preview: in the live store this uploads the file and buyers see it right away.",DELETE:"Preview: in the live store this deletes the file."}[m]||(u.indexOf("/link")>0?"":"Preview: in the live store this saves the change.");if(msg)setTimeout(function(){pvNote(msg);},50);
+return Promise.resolve(new Response(JSON.stringify(d),{status:200,headers:{"Content-Type":"application/json"}}));}return real.apply(this,arguments);};})();</script><script id="data" type="application/json">{"origin":"https://your-store.workers.dev","products":[{"id":"rv-splash","name":"RV Splash","price":10000,"files":[{"name":"rv-splash-site.zip","size":3250586,"uploaded":"2026-10-09T14:48:34.146Z"},{"name":"Setup Guide.pdf","size":629146,"uploaded":"2026-10-09T14:48:34.146Z"}]},{"id":"rvsplash-com","name":"RvSplash.com","price":10000,"files":[]},{"id":"peakfit","name":"Peakfit","price":10000,"files":[]},{"id":"shine-lane","name":"Shine Lane Car Wash","price":10000,"files":[{"name":"shine-lane-car-wash-site.zip","size":2306867,"uploaded":"2026-10-18T14:48:34.146Z"}]},{"id":"greenline","name":"Greenline Yard & Tree","price":10000,"files":[{"name":"greenline-yard-site.zip","size":1992294,"uploaded":"2026-10-12T14:48:34.146Z"},{"name":"Setup Guide.pdf","size":629146,"uploaded":"2026-10-12T14:48:34.146Z"}]},{"id":"keystone","name":"Keystone Plumbing Co.","price":10000,"files":[{"name":"Brand Colors and Fonts.pdf","size":314573,"uploaded":"2026-10-20T14:48:34.146Z"},{"name":"keystone-plumbing-site.zip","size":2516582,"uploaded":"2026-10-15T14:48:34.146Z"},{"name":"Setup Guide.pdf","size":629146,"uploaded":"2026-10-15T14:48:34.146Z"}]}],"members":[{"email":"offer.client@example.com","sites":["peakfit"],"hasPw":false,"created":1792766914,"lastLogin":null},{"email":"sam.carter@example.org","sites":["shine-lane"],"hasPw":false,"created":1792680514,"lastLogin":null},{"email":"maria.lopez@example.com","sites":["keystone","greenline"],"hasPw":true,"created":1792162114,"lastLogin":1792766914},{"email":"dave@example.net","sites":["rv-splash"],"hasPw":true,"created":1791643714,"lastLogin":1792594114}],"orders":[{"id":"cs_test_PREVIEWWELCOME1","email":"jordan@example.com","site":"keystone","amount":10000,"currency":"usd","created":1792853254,"source":"success page"},{"id":"cs_test_y5Z6a7B8c9D0e1F2","email":"sam.carter@example.org","site":"shine-lane","amount":10000,"currency":"usd","created":1792680514,"source":"webhook"},{"id":"cs_test_i9J0k1L2m3N4o5P6","email":"maria.lopez@example.com","site":"greenline","amount":10000,"currency":"usd","created":1792421314,"source":"success page"},{"id":"cs_test_a1B2c3D4e5F6g7H8","email":"maria.lopez@example.com","site":"keystone","amount":10000,"currency":"usd","created":1792162114,"source":"success page"},{"id":"cs_test_q7R8s9T0u1V2w3X4","email":"dave@example.net","site":"rv-splash","amount":10000,"currency":"usd","created":1791643714,"source":"success page"}]}</script>
+  <script>
+(function(){
+var D = JSON.parse(document.getElementById("data").textContent);
+var MAX = 99614720;
+var NAMES = {}; D.products.forEach(function(p){ NAMES[p.id] = p.name; });
+
+function el(tag, attrs){
+  var n = document.createElement(tag);
+  if (attrs) for (var k in attrs){
+    var v = attrs[k];
+    if (v == null || v === false) continue;
+    if (k === "text") n.textContent = v;
+    else if (k === "class") n.className = v;
+    else if (k.slice(0,2) === "on") n.addEventListener(k.slice(2), v);
+    else n.setAttribute(k, v === true ? "" : v);
+  }
+  for (var i = 2; i < arguments.length; i++){
+    var c = arguments[i];
+    if (c == null || c === false) continue;
+    if (Array.isArray(c)) c.forEach(function(x){ if (x) n.appendChild(typeof x === "string" ? document.createTextNode(x) : x); });
+    else n.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+  }
+  return n;
+}
+function money(c){ return "$" + (c/100).toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function size(b){ return b >= 1048576 ? (b/1048576).toFixed(1) + " MB" : Math.max(1, Math.round(b/1024)) + " KB"; }
+function day(s){ if (!s) return "Never"; var d = typeof s === "number" ? new Date(s*1000) : new Date(s); return d.toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"}); }
+function ext(n){ var m = /\.([A-Za-z0-9]+)$/.exec(n); return m ? m[1].toLowerCase() : ""; }
+
+function api(path, method, body){
+  return fetch(path, { method: method, headers: body ? {"Content-Type":"application/json"} : {}, body: body ? JSON.stringify(body) : undefined })
+    .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(d){ if (!r.ok) throw new Error(d.error || ("Request failed (" + r.status + ")")); return d; }); });
+}
+function reloadTo(tab){ location.hash = tab; }
+function confirmButton(label, armedLabel, run){
+  var armed = false, t;
+  var b = el("button", {type:"button", class:"mini danger", text:label});
+  b.addEventListener("click", function(){
+    if (!armed){ armed = true; b.classList.add("armed"); b.textContent = armedLabel; t = setTimeout(function(){ armed = false; b.classList.remove("armed"); b.textContent = label; }, 4000); return; }
+    clearTimeout(t); b.disabled = true; run(b);
+  });
+  return b;
+}
+function copyBtn(getText){
+  var b = el("button", {type:"button", class:"mini", text:"Copy"});
+  b.addEventListener("click", function(){
+    var done = function(){ b.textContent = "Copied"; setTimeout(function(){ b.textContent = "Copy"; }, 1500); };
+    try { navigator.clipboard.writeText(getText()).then(done, function(){ b.textContent = "Select and copy"; }); } catch(e){ b.textContent = "Select and copy"; }
+  });
+  return b;
+}
+
+// ---- Tabs ----
+var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+function show(id){
+  tabs.forEach(function(t){ var on = t.getAttribute("aria-controls") === id; t.setAttribute("aria-selected", on); t.tabIndex = on ? 0 : -1; document.getElementById(t.getAttribute("aria-controls")).hidden = !on; });
+}
+tabs.forEach(function(t){ t.addEventListener("click", function(){ show(t.getAttribute("aria-controls")); history.replaceState(null, "", "#" + t.getAttribute("aria-controls")); }); });
+show(["overview","files","members","orders"].indexOf(location.hash.slice(1)) >= 0 ? location.hash.slice(1) : "overview");
+
+// ---- Overview ----
+(function(){
+  var revenue = D.orders.reduce(function(s,o){ return s + (o.amount || 0); }, 0);
+  var missing = D.products.filter(function(p){ return !p.files.length; });
+  var noPw = D.members.filter(function(m){ return !m.hasPw && m.sites.length; });
+  var box = document.getElementById("overview");
+  box.appendChild(el("div", {class:"stats"},
+    el("div", null, el("b", {text: money(revenue)}), el("span", {text:"Revenue from Stripe orders"})),
+    el("div", null, el("b", {text: String(D.orders.length)}), el("span", {text:"Orders"})),
+    el("div", null, el("b", {text: String(D.members.length)}), el("span", {text:"Members"})),
+    el("div", null, el("b", {text: String(D.products.reduce(function(s,p){ return s + p.files.length; }, 0))}), el("span", {text:"Files stored"}))
+  ));
+  var todo = [];
+  missing.forEach(function(p){ todo.push(el("li", null, el("b", {text:p.name}), " has no files yet. Buyers can pay but will see \"Files coming soon\".")); });
+  noPw.forEach(function(m){ todo.push(el("li", null, el("b", {text:m.email}), " hasn't created a password. Send them an access link from Members.")); });
+  box.appendChild(el("div", {class:"card"}, el("h2", {text: todo.length ? "Needs attention" : "All set"}),
+    todo.length ? el("ul", {class:"todo"}, todo) : el("p", {class:"small", text:"Every product has files and every member can sign in."})));
+  var recent = D.orders.slice(0,5);
+  box.appendChild(el("div", {class:"card"}, el("h2", {text:"Latest orders"}),
+    recent.length ? el("ul", {class:"todo"}, recent.map(function(o){ return el("li", null, day(o.created) + " · " + (NAMES[o.site] || o.site) + " · " + money(o.amount) + " · " + o.email); }))
+                  : el("p", {class:"small", text:"No orders yet. Paid Stripe checkouts appear here automatically."})));
+})();
+
+// ---- Files ----
+(function(){
+  var box = document.getElementById("files");
+  box.appendChild(el("p", {class:"small", text:"Upload the PDF and ZIP files each buyer should get. Members who own a website see its files in their downloads right away."}));
+  D.products.forEach(function(p){
+    var input = el("input", {type:"file", id:"up-" + p.id, accept:".pdf,.zip,application/pdf,application/zip", multiple:true, "aria-label":"Choose PDF or ZIP files for " + p.name});
+    var msg = el("p", {class:"msg", role:"status", "aria-live":"polite"});
+    var go = el("button", {type:"button", class:"btn dark", text:"Upload"});
+    var zone = el("div", {class:"uploader"}, input, go);
+    function upload(files){
+      files = Array.prototype.slice.call(files || []);
+      if (!files.length){ msg.textContent = "Choose one or more .pdf or .zip files first."; msg.className = "msg err"; return; }
+      var bad = files.filter(function(f){ return ["pdf","zip"].indexOf(ext(f.name)) < 0; });
+      if (bad.length){ msg.textContent = bad[0].name + " isn't a PDF or ZIP."; msg.className = "msg err"; return; }
+      var big = files.filter(function(f){ return f.size > MAX; });
+      if (big.length){ msg.textContent = big[0].name + " is over 95 MB. Upload it in the Cloudflare dashboard instead."; msg.className = "msg err"; return; }
+      go.disabled = true; msg.className = "msg";
+      var i = 0;
+      (function next(){
+        if (i >= files.length){ msg.textContent = "Uploaded " + files.length + " file" + (files.length > 1 ? "s" : "") + "."; void 0; return; }
+        var f = files[i];
+        msg.textContent = "Uploading " + f.name + " (" + (i+1) + " of " + files.length + ")…";
+        fetch("/admin/api/files/" + encodeURIComponent(p.id), { method:"PUT", body:f, headers:{"X-File-Name": f.name} })
+          .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(d){ if (!r.ok) throw new Error(d.error || "Upload failed"); }); })
+          .then(function(){ i++; next(); })
+          .catch(function(e){ msg.textContent = f.name + ": " + e.message; msg.className = "msg err"; go.disabled = false; });
+      })();
+    }
+    go.addEventListener("click", function(){ upload(input.files); });
+    zone.addEventListener("dragover", function(e){ e.preventDefault(); zone.classList.add("drag"); });
+    zone.addEventListener("dragleave", function(){ zone.classList.remove("drag"); });
+    zone.addEventListener("drop", function(e){ e.preventDefault(); zone.classList.remove("drag"); upload(e.dataTransfer.files); });
+
+    var buyUrl = D.origin + "/buy/" + p.id;
+    var rows = p.files.length ? el("ul", {class:"files"}, p.files.map(function(f){
+      var x = ext(f.name);
+      var path = "/admin/api/files/" + encodeURIComponent(p.id) + "/" + encodeURIComponent(f.name);
+      return el("li", null,
+        el("span", {class:"badge " + x, text:x.toUpperCase()}),
+        el("div", null, el("p", {class:"fname", text:f.name}), el("p", {class:"small", text: size(f.size) + " · uploaded " + day(f.uploaded)})),
+        el("div", {class:"rowacts"},
+          el("a", {class:"mini", href:"#", "data-pv":"Preview: in the live store this downloads the file so you can check it.", text:"Download"}),
+          confirmButton("Delete", "Confirm delete", function(b){ api(path, "DELETE").then(function(){ reloadTo("files"); }).catch(function(e){ b.disabled = false; msg.textContent = e.message; msg.className = "msg err"; }); })
+        ));
+    })) : el("p", {class:"empty", text:"No files yet."});
+    box.appendChild(el("article", {class:"card"},
+      el("div", {class:"prod"},
+        el("div", null, el("p", {class:"eyebrow", text: money(p.price) + " · id " + p.id}), el("h2", {text:p.name}), el("p", {class:"buy", text:"Buy link: " + buyUrl})),
+        copyBtn(function(){ return buyUrl; })),
+      rows, zone, msg));
+  });
+})();
+
+// ---- Members ----
+(function(){
+  var box = document.getElementById("members");
+  var opts = function(){ return [el("option", {value:"", text:"Choose a website"})].concat(D.products.map(function(p){ return el("option", {value:p.id, text:p.name}); })); };
+
+  var email = el("input", {type:"email", id:"new-email", placeholder:"buyer@example.com", autocomplete:"off"});
+  var prod = el("select", {id:"new-prod"}, opts());
+  var addMsg = el("p", {class:"msg", role:"status", "aria-live":"polite"});
+  var add = el("form", {class:"inline", novalidate:true},
+    el("label", {for:"new-email"}, "Buyer email", email),
+    el("label", {for:"new-prod"}, "Website", prod),
+    el("button", {type:"submit", class:"btn dark", text:"Give access"}));
+  add.addEventListener("submit", function(e){
+    e.preventDefault();
+    if (!prod.value){ addMsg.textContent = "Choose a website."; addMsg.className = "msg err"; return; }
+    api("/admin/api/members/grant", "POST", {email: email.value, site: prod.value}).then(function(){ reloadTo("members"); }).catch(function(err){ addMsg.textContent = err.message; addMsg.className = "msg err"; });
+  });
+  box.appendChild(el("div", {class:"card"}, el("h2", {text:"Add a member"}),
+    el("p", {class:"small", text:"For buyers who paid outside Stripe, like an accepted offer. Then create an access link so they can set a password."}), add, addMsg));
+
+  if (!D.members.length){ box.appendChild(el("div", {class:"card"}, el("p", {class:"small", text:"No members yet. Buyers become members automatically when a Stripe payment succeeds."}))); return; }
+
+  var tbody = el("tbody");
+  D.members.forEach(function(m){
+    var msg = el("p", {class:"msg", role:"status", "aria-live":"polite"});
+    var out = el("div");
+    var sel = el("select", {"aria-label":"Add a website for " + m.email}, opts());
+    var chips = el("div", {class:"chips"}, m.sites.length ? m.sites.map(function(s){
+      return el("span", {class:"chip"}, NAMES[s] || s, el("button", {type:"button", "aria-label":"Remove " + (NAMES[s] || s) + " from " + m.email, text:"×", onclick:function(){
+        api("/admin/api/members/revoke", "POST", {email:m.email, site:s}).then(function(){ reloadTo("members"); }).catch(function(e){ msg.textContent = e.message; msg.className = "msg err"; });
+      }}));
+    }) : el("span", {class:"small", text:"No websites"}));
+    var addBtn = el("button", {type:"button", class:"mini", text:"Add", onclick:function(){
+      if (!sel.value) return;
+      api("/admin/api/members/grant", "POST", {email:m.email, site:sel.value}).then(function(){ reloadTo("members"); }).catch(function(e){ msg.textContent = e.message; msg.className = "msg err"; });
+    }});
+    var linkBtn = el("button", {type:"button", class:"mini", text: m.hasPw ? "Password reset link" : "Create access link", onclick:function(){
+      api("/admin/api/members/link", "POST", {email:m.email}).then(function(d){
+        out.textContent = "";
+        var code = el("code", {text:d.url});
+        out.appendChild(el("div", {class:"linkout"}, el("span", {class:"small", text:"Send this to " + m.email + ". It works once, for " + d.hours + " hours."}), code, copyBtn(function(){ return d.url; })));
+      }).catch(function(e){ msg.textContent = e.message; msg.className = "msg err"; });
+    }});
+    var del = confirmButton("Remove", "Confirm remove", function(b){
+      api("/admin/api/members/delete", "POST", {email:m.email}).then(function(){ reloadTo("members"); }).catch(function(e){ b.disabled = false; msg.textContent = e.message; msg.className = "msg err"; });
+    });
+    tbody.appendChild(el("tr", null,
+      el("td", null, el("b", {text:m.email}), el("p", {class:"small", text:"Joined " + day(m.created)})),
+      el("td", null, chips, el("div", {class:"cell"}, sel, addBtn)),
+      el("td", null, el("span", {class:"state " + (m.hasPw ? "on" : "off"), text: m.hasPw ? "Active" : "No password"}), el("p", {class:"small", text:"Last sign-in: " + day(m.lastLogin)})),
+      el("td", null, el("div", {class:"rowacts"}, linkBtn, del), out, msg)));
+  });
+  box.appendChild(el("div", {class:"tablewrap"}, el("table", null,
+    el("thead", null, el("tr", null, el("th", {text:"Member"}), el("th", {text:"Websites"}), el("th", {text:"Status"}), el("th", {text:"Actions"}))), tbody)));
+})();
+
+// ---- Orders ----
+(function(){
+  var box = document.getElementById("orders");
+  if (!D.orders.length){ box.appendChild(el("div", {class:"card"}, el("p", {class:"small", text:"No orders yet. Each paid Stripe checkout is recorded here and gives the buyer access automatically."}))); return; }
+  box.appendChild(el("div", {class:"tablewrap"}, el("table", null,
+    el("thead", null, el("tr", null, el("th", {text:"Date"}), el("th", {text:"Buyer"}), el("th", {text:"Website"}), el("th", {text:"Amount"}), el("th", {text:"Stripe checkout"}))),
+    el("tbody", null, D.orders.map(function(o){
+      return el("tr", null, el("td", {class:"num", text:day(o.created)}), el("td", {text:o.email}), el("td", {text:NAMES[o.site] || o.site}), el("td", {class:"num", text:money(o.amount)}), el("td", null, el("code", {class:"buy", text:o.id})));
+    })))));
+})();
+})();
+</script><script>window.pvNote=function(t){var o=document.querySelector(".pvtoast");if(!o){o=document.createElement("div");o.className="pvtoast";o.setAttribute("role","status");document.body.appendChild(o);}o.textContent=t;clearTimeout(window.pvT);window.pvT=setTimeout(function(){o.remove();},3800);};
+document.addEventListener("click",function(e){var a=e.target.closest("a[data-pv]");if(a){e.preventDefault();pvNote(a.getAttribute("data-pv"));}});</script></body></html>
