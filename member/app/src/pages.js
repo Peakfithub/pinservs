@@ -75,7 +75,7 @@ input[type=email],input[type=password],input[type=text],select{font:inherit;font
 const SEC_HEADERS = {
   "Content-Type": "text/html; charset=utf-8",
   "Cache-Control": "no-store",
-  "Referrer-Policy": "no-referrer",
+  "Referrer-Policy": "same-origin",
   "X-Frame-Options": "DENY",
   "X-Content-Type-Options": "nosniff",
 };

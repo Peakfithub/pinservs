@@ -1,3 +1,2 @@
-// Written automatically by the "Deploy Turnkey Store" GitHub action.
-// Leave empty until the store is deployed.
-window.TURNKEY_STORE_URL = "";
+// Address of the live store (checkout, member downloads, admin dashboard).
+window.TURNKEY_STORE_URL = "https://shop.pinservs.com";
