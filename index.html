@@ -4,8 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Pinservs | Domains, Websites & Advertising</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta name="description" content="Pinservs LLC registers domains, builds quality websites and runs advertising that brings customers to your business.">
-<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.5 system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.5 system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}header .btn{white-space:nowrap}
+</style>
 
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,7 +42,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px}
 .logo{display:flex;align-items:center;gap:8px;font-family:var(--f-display);font-weight:800;font-size:1.3rem;text-decoration:none;letter-spacing:-.02em}
-.logo svg{width:22px;height:28px}
+.pd-mark{width:32px;height:32px;flex:none}@media (max-width:520px){.logo .pd-sub{display:none}}.pd-sub{font-family:var(--f-mono);font-weight:600;font-size:.62em;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-left:2px}
 .nav ul{display:flex;gap:28px;list-style:none;margin:0;padding:0;font-weight:500;font-size:.95rem}
 .nav ul a{text-decoration:none;color:var(--muted)} .nav ul a:hover{color:var(--ink)}
 .btn{display:inline-flex;align-items:center;gap:8px;font:600 .95rem var(--f-body);background:var(--accent);color:#fff;border:0;border-radius:999px;padding:12px 22px;text-decoration:none;cursor:pointer;transition:transform .15s}
@@ -186,8 +188,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <header>
   <div class="wrap nav">
     <a class="logo" href="#top" aria-label="Pinservs home">
-      <svg viewBox="0 0 22 28" aria-hidden="true"><path fill="var(--pin)" d="M11 0C4.9 0 0 4.9 0 11c0 8.2 11 17 11 17s11-8.8 11-17C22 4.9 17.1 0 11 0z"/><circle cx="11" cy="11" r="4.2" fill="var(--bg)"/></svg>
-      Pinservs
+      <svg class="pd-mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M25 6C14.5 6 6 14.5 6 25c0 14 19 30 19 30s19-16 19-30C44 14.5 35.5 6 25 6z" fill="var(--pin)"/><circle cx="25" cy="25" r="7" fill="var(--bg)"/><path d="M52 22A10 10 0 0 0 42 12" fill="none" stroke="var(--accent)" stroke-width="4.5" stroke-linecap="round"/><path d="M60 22A18 18 0 0 0 42 4" fill="none" stroke="var(--accent)" stroke-width="4.5" stroke-linecap="round"/></svg>
+      <span>Pinservs</span><span class="pd-sub">Digital</span>
     </a>
     <ul>
       <li><a href="#services">Services</a></li>

@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Build Your Website Preview | Pinservs</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <meta name="description" content="Tell Pinservs about your business and watch your new website take shape as you type. Free preview, no commitment.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
@@ -43,7 +44,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 header.top{border-bottom:1px solid var(--line);background:var(--surface)}
 header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px}
 .logo{display:flex;align-items:center;gap:8px;font-family:var(--f-display);font-weight:800;font-size:1.2rem;color:var(--ink);text-decoration:none}
-.logo svg{width:18px;height:23px}
+.pd-mark{width:32px;height:32px;flex:none}@media (max-width:520px){.logo .pd-sub{display:none}}.pd-sub{font-family:var(--f-mono);font-weight:600;font-size:.62em;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-left:2px}
 .back{font-size:.92rem;color:var(--muted);text-decoration:none}
 .back:hover{color:var(--ink)}
 
@@ -184,7 +185,7 @@ body.viewmode .viewbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-ind
 <body>
 <header class="top">
   <div class="wrap">
-    <a class="logo" href="../"><svg viewBox="0 0 22 28" aria-hidden="true"><path fill="var(--pin)" d="M11 0C4.9 0 0 4.9 0 11c0 8.2 11 17 11 17s11-8.8 11-17C22 4.9 17.1 0 11 0z"/><circle cx="11" cy="11" r="4.2" fill="var(--surface)"/></svg>Pinservs</a>
+    <a class="logo" href="../"><svg class="pd-mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M25 6C14.5 6 6 14.5 6 25c0 14 19 30 19 30s19-16 19-30C44 14.5 35.5 6 25 6z" fill="var(--pin)"/><circle cx="25" cy="25" r="7" fill="var(--surface)"/><path d="M52 22A10 10 0 0 0 42 12" fill="none" stroke="var(--accent)" stroke-width="4.5" stroke-linecap="round"/><path d="M60 22A18 18 0 0 0 42 4" fill="none" stroke="var(--accent)" stroke-width="4.5" stroke-linecap="round"/></svg><span>Pinservs</span><span class="pd-sub">Digital</span></a>
     <a class="back" href="../">← Back to pinservs.com</a>
   </div>
 </header>
