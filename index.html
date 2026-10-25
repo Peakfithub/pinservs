@@ -49,6 +49,18 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:col
 .btn:hover{transform:translateY(-1px)}
 .btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
 @media (max-width:760px){.nav ul{display:none}}
+.nav-end{display:flex;align-items:center;gap:10px}
+.menu-btn{display:none;width:44px;height:44px;flex:none;align-items:center;justify-content:center;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);cursor:pointer}
+.menu-btn svg{width:22px;height:22px}
+.menu-btn .x{display:none}.menu-btn[aria-expanded="true"] .x{display:block}.menu-btn[aria-expanded="true"] .bars{display:none}
+.mnav{border-top:1px solid var(--line);background:var(--bg)}
+.mnav ul{list-style:none;margin:0 auto;padding-block:6px 18px;display:grid}
+.mnav a{display:flex;justify-content:space-between;align-items:center;min-height:52px;text-decoration:none;font-weight:600;font-size:1.08rem;border-bottom:1px solid var(--line)}
+.mnav a span{color:var(--muted);font-weight:500;font-size:.9rem}
+.cta-short{display:none}
+@media (max-width:760px){.menu-btn{display:inline-flex}}
+@media (min-width:761px){.mnav{display:none!important}}
+@media (max-width:520px){.cta-long{display:none}.cta-short{display:inline}.nav .btn{padding:11px 16px}}
 
 /* Hero */
 .hero{padding-block:72px 64px;display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}
@@ -198,8 +210,23 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <li><a href="#faq">FAQ</a></li>
       <li><a href="https://shop.pinservs.com/member">Shop</a></li>
     </ul>
-    <a class="btn" href="start/">Preview your website</a>
+    <div class="nav-end">
+      <a class="btn" href="start/"><span class="cta-long">Preview your website</span><span class="cta-short">Free preview</span></a>
+      <button class="menu-btn" type="button" id="menuBtn" aria-expanded="false" aria-controls="mnav" aria-label="Open menu">
+        <svg class="bars" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
   </div>
+  <nav class="mnav" id="mnav" aria-label="Menu" hidden>
+    <ul class="wrap">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#process">How we work</a></li>
+      <li><a href="#realestate">Real estate</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="https://shop.pinservs.com/member">Shop <span>shop.pinservs.com ↗</span></a></li>
+    </ul>
+  </nav>
 </header>
 
 <main id="top">
@@ -413,6 +440,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 <script>
 (function(){
+  // Phone menu
+  var menuBtn=document.getElementById("menuBtn"), mnav=document.getElementById("mnav");
+  function setMenu(open){ mnav.hidden=!open; menuBtn.setAttribute("aria-expanded", open); menuBtn.setAttribute("aria-label", open?"Close menu":"Open menu"); }
+  menuBtn.addEventListener("click", function(){ setMenu(mnav.hidden); });
+  mnav.addEventListener("click", function(e){ if(e.target.closest("a")) setMenu(false); });
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape" && !mnav.hidden){ setMenu(false); menuBtn.focus(); } });
+  document.addEventListener("click", function(e){ if(!mnav.hidden && !e.target.closest("header")) setMenu(false); });
+
   // Project tabs: any business / real estate agents
   var tabs=[document.getElementById("tab-any"), document.getElementById("tab-re")];
   function showTab(re, focus){
