@@ -7,6 +7,7 @@ export const SITES = {
   "shine-lane":   { name: "Shine Lane Car Wash",    price: 10000 },
   "greenline":    { name: "Greenline Yard & Tree",  price: 10000 },
   "keystone":     { name: "Keystone Plumbing Co.",  price: 10000 },
+  "brightside":   { name: "Brightside Cleaning Co.", price: 10000 },
 };
 
 export const CURRENCY = "usd";
