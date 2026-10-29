@@ -292,7 +292,7 @@ const SITES = [
     ]
   },
   {
-    id:"keystone", name:"Keystone Plumbing Co.", cat:"Plumbing services", url:"keystoneplumbing", img:"/member/img/plumbing.jpg",
+    id:"keystone", name:"Keystone Plumbing Co.", cat:"Plumbing services", url:"keystoneplumbing", img:"/member/img/plumbing.jpg", preview:"https://peakfithub.github.io/keystone-plumbing/",
     what:"A residential and commercial plumbing site with a clickable service catalog, a smart quote form and a 24/7 emergency line.",
     points:[
       "Service catalog filtered by residential or commercial",
@@ -438,12 +438,14 @@ const previews = {};
 let db = null;
 function renderPreview(id){
   const box = document.querySelector(`[data-live="${id}"]`);
-  const url = previews[id];
+  const site = SITES.find(x => x.id === id) || {};
+  const url = previews[id] || site.preview || "";
   if (!url){ box.innerHTML = `<p class="empty">Preview link coming soon.</p>`; return; }
   box.innerHTML = `<div class="linkbox"><span></span></div><a class="btn" target="_blank" rel="noopener">Open live preview ↗</a>`;
   box.querySelector("span").textContent = url;
   box.querySelector("a").href = url;
 }
+SITES.forEach(s => { if (s.preview) renderPreview(s.id); });
 const okUrl = u => { try { const x = new URL(u); return x.protocol === "https:" || x.protocol === "http:"; } catch { return false; } };
 (async () => {
   try { db = await window.claude?.use("db"); } catch { db = null; }
